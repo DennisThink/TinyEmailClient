@@ -85,6 +85,7 @@ namespace tiny_email
         POP3_SHOW_FIRST_EMAIL_ID,
         POP3_RECEIVE_FIRST_EMAIL,
         POP3_QUIT,
+        POP3_ANY,
         POP3_NO_OP,
     };
 
@@ -187,6 +188,21 @@ namespace tiny_email
        SERVER_SMTP_EMAIL_FINISH,
        SERVER_SMTP_SEND_EMAIL_DATA_OK_250,
        SERVER_SMTP_END,
+    };
+
+    enum POP3_CLIENT_STEP_t
+    {
+        POP3_CLIENT_STEP_BEGIN,
+        POP3_CLIENT_SEND_USER_NAME,
+        POP3_CLIENT_SEND_PASS_WORD,
+        POP3_CLIENT_SEND_STAT,
+        POP3_CLIENT_LIST_ALL,
+        POP3_CLIENT_LIST_UNREAD,
+        POP3_CLIENT_GET_ONE_UNREAD,
+        POP3_CLIENT_LIST_UNREAD_FINISHED,
+        POP3_CLIENT_STEP_NO_OP,
+        POP3_CLIENT_STEP_PRINT_EMAIL_LIST,
+        POP3_CLIENT_STEP_END,
     };
 }
 #endif
