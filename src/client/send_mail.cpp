@@ -10,7 +10,7 @@ std::string GetSmtpServerIpAddr(const std::string strSmtpAddr)
     int i;
     if ((hent = gethostbyname(strSmtpAddr.c_str())) == NULL)
     {
-        herror("gethostbyname error");
+        //herror("gethostbyname error");
         return "";
     }
     addr_list = (struct in_addr **)hent->h_addr_list;
