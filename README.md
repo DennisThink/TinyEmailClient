@@ -11,6 +11,8 @@ tinyEmailClient是一个简单的邮件发送程序，采用C++语言编写，cm
 2. tinyEmailClient使用c++语言编写,请保证您的c++编译器支持c++11。
 3. 在前两个条件准备好的基础上，就可以使用cmake工具进行编译了。
 
+## 代码运行
+1. ./tinyEmailClient {USER_NAME} {USER_PASSEWOR} {RECEIVER_ADDR} {EMAIL_CONTENT}
 ## English Document:
 
 tinyEmailClient is a very simple email send program which is writen by cpp and compiled by cmake tool.tinyEmailClient support ubuntu 22.04 now.

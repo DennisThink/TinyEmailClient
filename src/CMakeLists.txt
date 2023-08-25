@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(tinyEmailClient)
 set(CMAKE_CXX_STANDARD 11)
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+message("Windows")
+add_definitions(-DWINDOWS)
+else()
+endif()
 include_directories(./include/thirdparty/socket-cpp/Socket/)
 include_directories(./include/)
 SET(NET_FILE 
