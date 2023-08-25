@@ -3,6 +3,7 @@
 #include "smtp_client_handler.h"
 auto LogPrinter = [](const std::string &strLogMsg)
 { std::cout << strLogMsg << std::endl; };
+
 std::string GetSmtpServerIpAddr(const std::string strSmtpAddr)
 {
     struct hostent *hent = nullptr;

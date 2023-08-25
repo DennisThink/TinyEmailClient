@@ -1,5 +1,6 @@
 #include <iostream>
 #include "send_mail.h"
+#include "recv_mail.h"
 int main(int argc, char *argv[])
 {
     if(argc < 4)
@@ -13,7 +14,8 @@ int main(int argc, char *argv[])
         std::string strPassword = argv[2];
         std::string strReciver = argv[3];
         std::string strContent = argv[4];
-        SendEmail(strUser, strPassword, strReciver, strContent);
+        //SendEmail(strUser, strPassword, strReciver, strContent);
+        RecvEmail(strUser, strPassword);
         std::cout << "Client " << std::endl;
     }
     return 0;
