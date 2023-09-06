@@ -84,10 +84,11 @@ namespace tiny_email{
         }
         return false;
     }
-    bool CSmtpClientHandler::SendMail(const std::string strReciver, const std::string strMailContent)
+    bool CSmtpClientHandler::SendMail(const std::string strReciver, const std::string strMailContent,const std::string strSubject)
     {
         m_strReceiverAddr = strReciver;
         m_strContent = strMailContent;
+        m_strSubject = strSubject;
         return true;
     }
 

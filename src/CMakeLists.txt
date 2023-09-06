@@ -7,6 +7,7 @@ add_definitions(-DWINDOWS)
 else()
 endif()
 include_directories(./include/thirdparty/socket-cpp/Socket/)
+include_directories(./include/thirdparty/clipp/include/)
 include_directories(./include/)
 SET(NET_FILE 
      ./include/thirdparty/socket-cpp/Socket/TCPClient.cpp 

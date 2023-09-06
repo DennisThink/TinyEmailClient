@@ -10,7 +10,7 @@ class CSmtpClientHandler
     public:
         CSmtpClientHandler(const std::string strUserName, const std::string strPassword);
         std::string GetSmtpAddr();
-        bool SendMail(const std::string strReciver, const std::string strMailContent);
+        bool SendMail(const std::string strReciver, const std::string strMailContent,const std::string strSubject="");
         bool FinishOrFailed();
         void OnReceive(const std::string strValue);
         std::string GetSend();
@@ -27,6 +27,7 @@ class CSmtpClientHandler
         std::string m_strReceiverAddr;
         std::string m_strContent;
         std::string m_strSend;
+        std::string m_strSubject;
     };
 }
 #endif
