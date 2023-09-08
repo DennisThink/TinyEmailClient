@@ -1,3 +1,14 @@
+
+/**
+ * @file main.cpp
+ * @author DennisThink (dennisthink@hotmail.com)
+ * @brief this is a simple program to send email
+ * @version 0.1
+ * @date 2023-09-06
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <iostream>
 #include "send_mail.h"
 #include "recv_mail.h"
@@ -9,14 +20,21 @@ int main(int argc, char *argv[])
         std::string strUser;
         std::string strPassword;
         std::string strReciver;
+        std::string strCarbonCopy;
+        std::string strBlindCarbonCopy;
         std::string strContent;
         std::string strSubject;
+        bool bSetCarbonCopy=false;
+        bool bSetBlindCarbonCopy=false;
+        bool bSetEmailSubject=false;
         auto cli = (
                     required("-u", "--user").doc("the account you used for send email")&value("user",strUser),
                     required("-p", "--password").doc("the password of the account")&value("password",strPassword),
                     required("-r", "--receiver").doc("email address to receive email")&value("receiver",strReciver),
-                    required("-t", "--context").doc("email content")&value("context",strContent),
-                    required("-s", "--subject").doc("email subject")&value("subject",strSubject));
+                    option("-cc","--carboncopy").doc("email address to copy email to").set(bSetCarbonCopy)&value("carboncopy",strCarbonCopy),
+                    option("-bcc","--blind-carbon-copy").doc("email address to copy email to but secrect").set(bSetBlindCarbonCopy)&value("blind carboncopy",strBlindCarbonCopy),
+                    option("-s","--subject").doc("email subject").set(bSetEmailSubject)&value("email subject",strSubject),
+                    required("-t", "--context").doc("email content")&value("context",strContent));
 
         if (!parse(argc, argv, cli))
         {
@@ -25,7 +43,15 @@ int main(int argc, char *argv[])
         }
         else
         {
-            SendEmail(strUser, strPassword, strReciver, strContent);
+            if(bSetCarbonCopy)
+            {
+                std::cout<<"CarbonCopy Value:"<<strCarbonCopy<<std::endl;
+            }
+            else
+            {
+                std::cout<<"CarbonCopy Not Value:"<<strCarbonCopy<<std::endl;
+            }
+            //SendEmail(strUser, strPassword, strReciver, strContent,strSubject);
         }
     }
     return 0;

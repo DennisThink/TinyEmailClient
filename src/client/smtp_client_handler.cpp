@@ -84,9 +84,10 @@ namespace tiny_email{
         }
         return false;
     }
-    bool CSmtpClientHandler::SendMail(const std::string strReciver, const std::string strMailContent,const std::string strSubject)
+    bool CSmtpClientHandler::SendMail(const std::string strReciver,const std::string strCarbonCopy, const std::string strMailContent,const std::string strSubject)
     {
         m_strReceiverAddr = strReciver;
+        m_strCarbonCopy = strCarbonCopy;
         m_strContent = strMailContent;
         m_strSubject = strSubject;
         return true;
@@ -156,6 +157,8 @@ namespace tiny_email{
                 strResult += m_strEmailAddr;
                 strResult += ">\r\n";
                 strResult += "To: <"+ m_strReceiverAddr +">\r\n";
+                strResult += "Cc: "+m_strCarbonCopy+"\r\n";
+                strResult += "Subject: "+m_strSubject+"\r\n";
                 strResult += "\r\n";
                 strResult += m_strContent+"\r\n";
                 strResult += "\r\n.\r\n";

@@ -23,7 +23,7 @@ std::string GetSmtpServerIpAddr(const std::string strSmtpAddr)
     }
     return "";
 }
-void SendEmail(const std::string strUserName, std::string strPassword, std::string strReceiver, std::string Content)
+void SendEmail(const std::string strUserName, std::string strPassword, std::string strReceiver, std::string Content,std::string strSubject)
 {
     tiny_email::CSmtpClientHandler handler(strUserName, strPassword);
     CTCPClient tcpFd(LogPrinter);
@@ -32,7 +32,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     tcpFd.Connect(strIp, strPort);
     char buff[128] = {0};
 
-    handler.SendMail(strReceiver, Content);
+    handler.SendMail(strReceiver, Content,strSubject);
     while (!handler.FinishOrFailed())
     {
         memset(buff, 0, 128);
