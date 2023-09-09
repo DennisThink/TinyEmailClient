@@ -1,0 +1,2 @@
+1. Add debug mod
+2. Add Error report and error message。

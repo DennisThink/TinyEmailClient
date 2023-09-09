@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
         bool bSetCarbonCopy=false;
         bool bSetBlindCarbonCopy=false;
         bool bSetEmailSubject=false;
+        bool bDebugOn=false;
         auto cli = (
                     required("-u", "--user").doc("the account you used for send email")&value("user",strUser),
                     required("-p", "--password").doc("the password of the account")&value("password",strPassword),
@@ -34,6 +35,7 @@ int main(int argc, char *argv[])
                     option("-cc","--carboncopy").doc("email address to copy email to").set(bSetCarbonCopy)&value("carboncopy",strCarbonCopy),
                     option("-bcc","--blind-carbon-copy").doc("email address to copy email to but secrect").set(bSetBlindCarbonCopy)&value("blind carboncopy",strBlindCarbonCopy),
                     option("-s","--subject").doc("email subject").set(bSetEmailSubject)&value("email subject",strSubject),
+                    option("-d","--debug").doc("enable debug mode").set(bDebugOn),
                     required("-t", "--context").doc("email content")&value("context",strContent));
 
         if (!parse(argc, argv, cli))
@@ -43,15 +45,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            if(bSetCarbonCopy)
-            {
-                std::cout<<"CarbonCopy Value:"<<strCarbonCopy<<std::endl;
-            }
-            else
-            {
-                std::cout<<"CarbonCopy Not Value:"<<strCarbonCopy<<std::endl;
-            }
-            //SendEmail(strUser, strPassword, strReciver, strContent,strSubject);
+            SendEmail(strUser, strPassword, strReciver,strCarbonCopy, strContent,strSubject,bDebugOn);
         }
     }
     return 0;
