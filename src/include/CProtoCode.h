@@ -202,6 +202,7 @@ namespace tiny_email
         POP3_CLIENT_LIST_UNREAD_FINISHED,
         POP3_CLIENT_STEP_NO_OP,
         POP3_CLIENT_STEP_PRINT_EMAIL_LIST,
+        POP3_CLIENT_STEP_QUIT,
         POP3_CLIENT_STEP_END,
     };
 }

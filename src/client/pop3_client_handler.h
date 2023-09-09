@@ -24,6 +24,7 @@ namespace tiny_email
     private:
         void HandleListAllRsp(const std::string strRsp);
         void HandleGetOneUnread(const std::string strValue);
+        void UpdateCurEmail();
         void HandleServerRsp(const std::string strRsp);
         std::string GetNextSend(const POP3_CLIENT_STEP_t curStep);
         POP3_CLIENT_STEP_t GetNextCmd(const POP3_CLIENT_STEP_t curStep, const Pop3Code_t code);
@@ -41,8 +42,10 @@ namespace tiny_email
         std::string m_strRecv;
         std::string m_strListAll;
         std::vector<Pop3EmailElem_t> m_unreadIndexVec;
-                std::string m_strEmailFormat;
-        std::size_t m_strEmailCount;
+        std::string m_strEmailFormat;
+        std::string m_strCurMailIndex;
+        std::size_t m_nCurEmailCount;
+        std::string m_strCurMailBegin;
     };
 }
 #endif

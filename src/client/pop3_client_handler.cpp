@@ -42,14 +42,17 @@ namespace tiny_email
                 }
                 if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD)
                 {
-                        m_strRecv += strRsp;
-                        if (m_strRecv.length() + strRsp.length() < m_unreadIndexVec.begin()->m_emailSize)
+                        if (strRsp.find(".\r\n") !=std::string::npos)
                         {
-                                return false;
+                            std::cout<<"-----------------------------------------------------"<<std::endl;
+                            std::cout<<"MailIndex:  "<< m_nCurEmailCount  <<"   Server: "<<strRsp.length()<<"   "<<std::endl;
+                            std::cout<<"-----------------------------------------------------"<<std::endl;
+                            return true;
                         }
                         else
                         {
-                                return true;
+                            //std::cout<<"Index:"<<m_strCurMailIndex  <<"Size: "<<m_nCurEmailCount<<"  "<<strRsp.length()<<std::endl;
+                            return false;
                         }
                 }
                 if (strRsp.find("\r\n") != std::string::npos)
@@ -67,7 +70,7 @@ namespace tiny_email
                 {
                         std::size_t index = result[i].find_first_of(' ');
                         std::string strIndex = result[i].substr(0, index);
-                        std::size_t count = std::atol(result[i].substr(index).c_str());
+                        std::size_t count = 0;//
                         m_unreadIndexVec.push_back({strIndex, count});
                 }
                 {
@@ -78,28 +81,34 @@ namespace tiny_email
                         }
                         std::cout << "----------------------List All-------------------------------" << std::endl;
                 }
+                UpdateCurEmail();
                 return;
+        }
+
+        void CPop3ClientHandler::UpdateCurEmail()
+        {
+               
+                if (!m_unreadIndexVec.empty())
+                {
+                        m_strCurMailIndex = m_unreadIndexVec.begin()->m_strIndex;
+                        m_nCurEmailCount = m_unreadIndexVec.begin()->m_emailSize;
+                        m_unreadIndexVec.erase(m_unreadIndexVec.begin());
+                }
+                else
+                {
+                        m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT;
+                }
         }
         void CPop3ClientHandler::HandleGetOneUnread(const std::string strValue)
         {
                 m_strEmailFormat += strValue;
                 std::cout << "----------------------------------------" << std::endl;
-                std::cout << "EMail: " << m_strEmailFormat << std::endl;
+                //std::cout << "EMail: " << m_strEmailFormat << std::endl;
                 std::cout << "----------------------------------------" << std::endl;
-                std::cout << "EMailLen: " << m_strEmailFormat.length() << "     " << m_strEmailCount << std::endl;
+                std::cout << "EMailLen: " << m_strEmailFormat.length() << "     " << m_nCurEmailCount << std::endl;
                 m_strEmailFormat.clear();
-                m_strEmailCount = 0;
-                if (!m_unreadIndexVec.empty())
-                {
-                        std::string strCmd = "RETR " + (m_unreadIndexVec.begin()->m_strIndex) + "\r\n";
-                        m_strEmailCount = m_unreadIndexVec.begin()->m_emailSize;
-                        m_unreadIndexVec.erase(m_unreadIndexVec.begin());
-                }
-                else
-                {
-                        m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_END;
-                        std::string strCmd = "QUIT \r\n";
-                }
+                UpdateCurEmail();
+             
         }
         void CPop3ClientHandler::HandleServerRsp(const std::string strValue)
         {
@@ -128,7 +137,6 @@ namespace tiny_email
                 m_strRecv += strValue;
                 if (IsServerRspCompleted(m_strRecv))
                 {
-                        std::cout << "-------------------Finished------" << std::endl;
                         std::string strRsp = m_strRecv;
                         HandleServerRsp(strRsp);
                         m_strRecv.clear();
@@ -174,10 +182,12 @@ namespace tiny_email
                 }
                 if (curStep == POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD)
                 {
-                        std::string strCmd = "RETR " + (m_unreadIndexVec.begin()->m_strIndex) + "\r\n";
-                        m_strEmailCount = m_unreadIndexVec.begin()->m_emailSize;
-                        m_unreadIndexVec.erase(m_unreadIndexVec.begin());
-                        return strCmd;
+                      std::string strCmd = "RETR " + m_strCurMailIndex + "\r\n";
+                      return strCmd;
+                }
+                if (curStep == POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT)
+                {
+                        return "quit\r\n";
                 }
                 return "";
         }
@@ -223,9 +233,9 @@ namespace tiny_email
                     POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_PRINT_EMAIL_LIST,
                 },
                 {
-                        POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD,
-                        Pop3Code_t::POP3_ANY,
-                        POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD,
+                    POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD,
+                    Pop3Code_t::POP3_ANY,
+                    POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD,
 
                 },
                 {POP3_CLIENT_STEP_t::POP3_CLIENT_LIST_UNREAD_FINISHED, Pop3Code_t::POP3_OK, POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_PRINT_EMAIL_LIST},
@@ -233,6 +243,11 @@ namespace tiny_email
                     POP3_CLIENT_STEP_t::POP3_CLIENT_LIST_UNREAD,
                     Pop3Code_t::POP3_OK,
                     POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_PRINT_EMAIL_LIST,
+                },
+                 {
+                    POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT,
+                    Pop3Code_t::POP3_ANY,
+                    POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT,
                 },
         };
         const int POP3_ARRAY_SIZE = sizeof(Pop3Array) / sizeof(Pop3Array[0]);
