@@ -152,7 +152,6 @@ namespace tiny_email{
         {
             std::string strResult;
             {
-                strResult += "Subject:Design Plan\r\n";
                 strResult += "From: <";
                 strResult += m_strEmailAddr;
                 strResult += ">\r\n";

@@ -23,15 +23,23 @@ std::string GetPop3ServerIpAddr(const std::string strSmtpAddr)
     }
     return "";
 }
-void RecvEmail(const std::string strUserName, std::string strPassword,bool bDebug)
+void RecvEmail(const std::string strUserName, std::string strPassword,bool bDebug,std::string strPort)
 {
     tiny_email::CPop3ClientHandler handler(strUserName,strPassword);
     std::string strPop3Addr = handler.GetPop3Addr();
     std::string strPop3Ip = GetPop3ServerIpAddr(strPop3Addr);
-    std::string strPop3Port = "110";
-
+    std::string strPop3Port = strPort;
+    std::cout<<"Pop3:  "<<strPop3Addr<<"  IP:  "<<strPop3Ip<<std::endl;
     CTCPClient tcpFd(LogPrinter2);
-    tcpFd.Connect(strPop3Ip, strPop3Port);
+    if(!tcpFd.Connect(strPop3Ip, strPop3Port))
+    {
+        return ;
+    }
+    else
+    {
+        std::cout<<"Pop3:  "<<strPop3Addr<<"  IP:  "<<strPop3Ip<<std::endl;
+        std::cout<<"Connect Succeed"<<std::endl;
+    }
     char buff[2048] = {0};
 
     while (!handler.FinishOrFailed())
@@ -43,7 +51,10 @@ void RecvEmail(const std::string strUserName, std::string strPassword,bool bDebu
             break;
         }
         std::string strValue(buff,ret);
-        //std::cout<<"S: "<<strValue<<std::endl;
+        if(bDebug)
+        {
+            std::cout<<"S: "<<strValue<<std::endl;
+        }
         handler.OnReceive(strValue);
         std::string strMsg = handler.GetSend();
         if (!strMsg.empty())

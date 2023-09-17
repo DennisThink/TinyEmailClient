@@ -18,12 +18,14 @@ int main(int argc, char *argv[])
         using namespace clipp;
         std::string strUser;
         std::string strPassword;
+        std::string strPort="110";
         bool bDebugOn=false;
+        bool bSetPort = false;
         auto cli = (
                     required("-u", "--user").doc("the account you used for send email")&value("user",strUser),
                     required("-p", "--password").doc("the password of the account")&value("password",strPassword),
-                    option("-d","--debug").doc("enable debug mode").set(bDebugOn));
-
+                    option("-d","--debug").doc("enable debug mode").set(bDebugOn),
+                    option("-pp","--port").doc("pop3 server port").set(bSetPort)&opt_value("port",strPort));
         if (!parse(argc, argv, cli))
         {
             std::cout << make_man_page(cli, argv[0])<<std::endl;
@@ -31,7 +33,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            RecvEmail(strUser, strPassword,bDebugOn);
+            RecvEmail(strUser, strPassword,bDebugOn,strPort);
         }
     }
     return 0;

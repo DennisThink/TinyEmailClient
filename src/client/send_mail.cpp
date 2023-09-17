@@ -34,8 +34,17 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     tiny_email::CSmtpClientHandler handler(strUserName, strPassword);
     CTCPClient tcpFd(LogPrinter);
     std::string strPort = "25";
-    std::string strIp = GetSmtpServerIpAddr(handler.GetSmtpAddr());
-    tcpFd.Connect(strIp, strPort);
+    std::string strSmtpAddr = handler.GetSmtpAddr();
+    std::string strIp = GetSmtpServerIpAddr(strSmtpAddr);
+    if(bDebug)
+    {
+        std::cout<<"SMTP Addr: "<<strSmtpAddr<<std::endl;
+        std::cout<<"SMTP IP: "<<strIp<<std::endl;
+    }
+    if(!tcpFd.Connect(strIp, strPort))
+    {
+        return ;
+    }
     char buff[128] = {0};
 
     std::string strLog;
@@ -43,8 +52,8 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     while (!handler.FinishOrFailed())
     {
         memset(buff, 0, 128);
-        tcpFd.Receive(buff, 128, false);
-        std::string strValue(buff);
+        int nRecv = tcpFd.Receive(buff, 128, false);
+        std::string strValue(buff,nRecv);
         strLog+=strValue;
         handler.OnReceive(strValue);
         std::string strMsg = handler.GetSend();
@@ -53,6 +62,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
             if(bDebug)
             {
                 std::cout<<"S: "<<strLog<<std::endl;
+                strLog.clear();
                 std::cout<<"C: "<<strMsg<<std::endl;
             }
             tcpFd.Send(strMsg);
