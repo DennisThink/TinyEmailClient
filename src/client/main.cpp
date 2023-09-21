@@ -24,10 +24,14 @@ int main(int argc, char *argv[])
         std::string strBlindCarbonCopy;
         std::string strContent;
         std::string strSubject;
+        std::string strSmtpServer;
+        std::string strPort;
         bool bSetCarbonCopy=false;
         bool bSetBlindCarbonCopy=false;
         bool bSetEmailSubject=false;
         bool bDebugOn=false;
+        bool bSetSmtpServer = false;
+        bool bSetPort = false;
         auto cli = (
                     required("-u", "--user").doc("the account you used for send email")&value("user",strUser),
                     required("-p", "--password").doc("the password of the account")&value("password",strPassword),
@@ -36,7 +40,9 @@ int main(int argc, char *argv[])
                     option("-bcc","--blind-carbon-copy").doc("email address to copy email to but secrect").set(bSetBlindCarbonCopy)&value("blind carboncopy",strBlindCarbonCopy),
                     option("-s","--subject").doc("email subject").set(bSetEmailSubject)&value("email subject",strSubject),
                     option("-d","--debug").doc("enable debug mode").set(bDebugOn),
-                    required("-t", "--context").doc("email content")&value("context",strContent));
+                    required("-t", "--context").doc("email content")&value("context",strContent),
+                    option("-server","--server").doc("smtp server addr").set(bSetSmtpServer)&value("smtp server ip addr",strSmtpServer),
+                    option("-port","--port").doc("smtp server port").set(bSetPort)&value("email subject",strPort));
 
         if (!parse(argc, argv, cli))
         {

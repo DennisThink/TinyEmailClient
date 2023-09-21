@@ -28,20 +28,28 @@ std::string GetSmtpServerIpAddr(const std::string strSmtpAddr)
     return "";
 }
 
-void SendEmail(const std::string strUserName, std::string strPassword, std::string strReceiver,std::string strCarbonCopy, std::string Content,std::string strSubject,const bool bDebug)
+void SendEmail(const std::string strUserName, std::string strPassword, std::string strReceiver,std::string strCarbonCopy, std::string Content,std::string strSubject,const bool bDebug,const std::string strSmtpServer,const std::string strPort)
 {
     g_bDebugOn = bDebug;
     tiny_email::CSmtpClientHandler handler(strUserName, strPassword);
     CTCPClient tcpFd(LogPrinter);
-    std::string strPort = "25";
-    std::string strSmtpAddr = handler.GetSmtpAddr();
-    std::string strIp = GetSmtpServerIpAddr(strSmtpAddr);
+    std::string strSmtpPort=strPort;
+    std::string strSmtpIp="";
+    if(strSmtpPort.empty())
+    {
+        strSmtpPort="25";
+    }
+    
+    if(strSmtpServer.empty())
+    {
+        std::string strSmtpAddr = handler.GetSmtpAddr();
+        strSmtpIp = GetSmtpServerIpAddr(strSmtpAddr);
+    }
     if(bDebug)
     {
-        std::cout<<"SMTP Addr: "<<strSmtpAddr<<std::endl;
-        std::cout<<"SMTP IP: "<<strIp<<std::endl;
+        std::cout<<"SMTP Addr: "<<strSmtpIp<<std::endl;
     }
-    if(!tcpFd.Connect(strIp, strPort))
+    if(!tcpFd.Connect(strSmtpIp, strSmtpPort))
     {
         return ;
     }
