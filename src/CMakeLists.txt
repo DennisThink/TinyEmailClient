@@ -4,17 +4,24 @@ set(CMAKE_CXX_STANDARD 11)
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 message("Windows")
 add_definitions(-DWINDOWS)
-
+set( CMAKE_EXPORT_COMPILE_COMMANDS ON)
 else()
-endif()
 SET(CMAKE_CXX_FLAGS "-g")
+endif()
+add_definitions(-DOPENSSL)
 include_directories(./include/thirdparty/socket-cpp/Socket/)
 include_directories(./include/thirdparty/clipp/include/)
 include_directories(./include/)
+include_directories(/usr/local/include/openssl/)
+link_directories(/usr/local/lib64/)
 SET(NET_FILE 
-     ./include/thirdparty/socket-cpp/Socket/TCPClient.cpp 
+     ./include/thirdparty/socket-cpp/Socket/TCPClient.cpp
+     ./include/thirdparty/socket-cpp/Socket/TCPSSLClient.cpp 
+     ./include/thirdparty/socket-cpp/Socket/SecureSocket.cpp
      ./include/thirdparty/socket-cpp/Socket/Socket.cpp)
 SET(POP3_FILE ./client/pop3_client_handler.cpp ./client/recv_mail.cpp ./include/CPop3ProtoCmd.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
-SET(SMTP_FILE ./client/smtp_client_handler.cpp ./client/send_mail.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
+SET(SMTP_FILE ./client/smtp_client_handler.cpp ./client/send_mail.cpp ./client/send_mail_ssl.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
 add_executable(client ./client/main.cpp     ${NET_FILE} ${SMTP_FILE})
-add_executable(pop3_client ./client/pop3_main.cpp ${NET_FILE} ${POP3_FILE})
+target_link_libraries(client /usr/local/lib64/libssl.a)
+target_link_libraries(client /usr/local/lib64/libcrypto.a)
+#add_executable(pop3_client ./client/pop3_main.cpp ${NET_FILE} ${POP3_FILE})
