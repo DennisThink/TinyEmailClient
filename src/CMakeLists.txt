@@ -20,8 +20,18 @@ SET(NET_FILE
      ./include/thirdparty/socket-cpp/Socket/SecureSocket.cpp
      ./include/thirdparty/socket-cpp/Socket/Socket.cpp)
 SET(POP3_FILE ./client/pop3_client_handler.cpp ./client/recv_mail.cpp ./include/CPop3ProtoCmd.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
-SET(SMTP_FILE ./client/smtp_client_handler.cpp ./client/send_mail.cpp ./client/send_mail_ssl.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
-add_executable(client ./client/main.cpp     ${NET_FILE} ${SMTP_FILE})
-target_link_libraries(client /usr/local/lib64/libssl.a)
-target_link_libraries(client /usr/local/lib64/libcrypto.a)
-#add_executable(pop3_client ./client/pop3_main.cpp ${NET_FILE} ${POP3_FILE})
+SET(SMTP_FILE ./client/smtp_client_handler.cpp ./client/send_mail.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
+add_executable(smtp ./client/smtp_main.cpp     ${NET_FILE} ${SMTP_FILE})
+add_executable(smtp_ssl ./client/smtp_ssl_main.cpp     ${NET_FILE} ${SMTP_FILE} ./client/send_mail_ssl.cpp)
+add_executable(pop3_client ./client/pop3_main.cpp ${NET_FILE} ${POP3_FILE})
+add_executable(pop3_ssl ./client/pop3_ssl_main.cpp ${NET_FILE} ${POP3_FILE} ./client/recv_mail_ssl.cpp)
+target_link_libraries(smtp /usr/local/lib64/libssl.a)
+target_link_libraries(smtp /usr/local/lib64/libcrypto.a)
+
+target_link_libraries(smtp_ssl /usr/local/lib64/libssl.a)
+target_link_libraries(smtp_ssl /usr/local/lib64/libcrypto.a)
+target_link_libraries(pop3_client /usr/local/lib64/libssl.a)
+target_link_libraries(pop3_client /usr/local/lib64/libcrypto.a)
+
+target_link_libraries(pop3_ssl /usr/local/lib64/libssl.a)
+target_link_libraries(pop3_ssl /usr/local/lib64/libcrypto.a)

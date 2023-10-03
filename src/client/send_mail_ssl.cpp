@@ -1,6 +1,5 @@
 #include "TCPSSLClient.h"
 #include "smtp_client_handler.h"
-namespace SMTL_SSL{
     static bool g_bDebugOn = false;
     auto LogPrinterSSL = [](const std::string &strLogMsg)
     {
@@ -39,7 +38,7 @@ namespace SMTL_SSL{
         std::string strSmtpIp = "";
         if (strSmtpPort.empty())
         {
-            strSmtpPort = "25";
+            strSmtpPort = "465";
         }
 
         if (strSmtpServer.empty())
@@ -49,7 +48,7 @@ namespace SMTL_SSL{
         }
         if (bDebug)
         {
-            std::cout << "SMTP Addr: " << strSmtpIp << std::endl;
+            std::cout << "SMTP Addr: " << strSmtpIp << "  Port: "<<strSmtpPort<< std::endl;
         }
         if (!tcpFd.Connect(strSmtpIp, strSmtpPort))
         {
@@ -79,4 +78,3 @@ namespace SMTL_SSL{
             }
         }
     }
-};
