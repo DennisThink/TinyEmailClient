@@ -1,4 +1,10 @@
 #include "ProtoUtil.h"
+#include <netdb.h>
+#include <sys/socket.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <string.h>
 #include <iostream>
 namespace tiny_email
 {
@@ -176,5 +182,25 @@ namespace tiny_email
     }
 
     return ret;
+  }
+
+  std::string CProtoUtil::AddrToIp(const std::string strAddr)
+  {
+     struct hostent *hent = nullptr;
+    struct in_addr **addr_list = nullptr;
+    int i;
+    if ((hent = gethostbyname(strAddr.c_str())) == NULL)
+    {
+        //herror("gethostbyname error");
+        return "";
+    }
+    addr_list = (struct in_addr **)hent->h_addr_list;
+    char ip[100] = {0};
+    for (int i = 0; addr_list[i] != NULL; i++)
+    {
+        strcpy(ip, inet_ntoa(*addr_list[i]));
+        return ip;
+    }
+    return "";
   }
 } // namespace cpp_email

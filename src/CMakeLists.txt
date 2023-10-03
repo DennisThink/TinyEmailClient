@@ -19,7 +19,7 @@ SET(NET_FILE
      ./include/thirdparty/socket-cpp/Socket/TCPSSLClient.cpp 
      ./include/thirdparty/socket-cpp/Socket/SecureSocket.cpp
      ./include/thirdparty/socket-cpp/Socket/Socket.cpp)
-SET(POP3_FILE ./client/pop3_client_handler.cpp ./client/recv_mail.cpp ./include/CPop3ProtoCmd.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
+SET(POP3_FILE ./client/pop3_client_handler.cpp ./include/ProtoUtil.cpp ./client/recv_mail.cpp ./include/CPop3ProtoCmd.cpp ./include/CProtoCmd.cpp)
 SET(SMTP_FILE ./client/smtp_client_handler.cpp ./client/send_mail.cpp ./include/ProtoUtil.cpp ./include/CProtoCmd.cpp)
 add_executable(smtp ./client/smtp_main.cpp     ${NET_FILE} ${SMTP_FILE})
 add_executable(smtp_ssl ./client/smtp_ssl_main.cpp     ${NET_FILE} ${SMTP_FILE} ./client/send_mail_ssl.cpp)

@@ -1,45 +1,24 @@
 #include "recv_mail.h"
 #include "TCPSSLClient.h"
 #include "pop3_client_handler.h"
-auto LogPrinterSSL1 = [](const std::string &strLogMsg)
-{ std::cout << strLogMsg << std::endl; };
-
-static std::string GetPop3ServerIpAddr(const std::string strSmtpAddr)
+#include "ProtoUtil.h"
+void RecvEmailSSL(const std::string strUserName, std::string strPassword, bool bDebug, std::string strPort)
 {
-    struct hostent *hent = nullptr;
-    struct in_addr **addr_list = nullptr;
-    int i;
-    if ((hent = gethostbyname(strSmtpAddr.c_str())) == NULL)
-    {
-        herror("gethostbyname error");
-        return "";
-    }
-    addr_list = (struct in_addr **)hent->h_addr_list;
-    char ip[100] = {0};
-    for (int i = 0; addr_list[i] != NULL; i++)
-    {
-        strcpy(ip, inet_ntoa(*addr_list[i]));
-        return ip;
-    }
-    return "";
-}
-
-void RecvEmailSSL(const std::string strUserName, std::string strPassword,bool bDebug,std::string strPort)
-{
-    tiny_email::CPop3ClientHandler handler(strUserName,strPassword);
+    tiny_email::CPop3ClientHandler handler(strUserName, strPassword);
     std::string strPop3Addr = handler.GetPop3Addr();
-    std::string strPop3Ip = GetPop3ServerIpAddr(strPop3Addr);
+    std::string strPop3Ip = tiny_email::CProtoUtil::AddrToIp(strPop3Addr);
     std::string strPop3Port = strPort;
-    std::cout<<"Pop3:  "<<strPop3Addr<<"  IP:  "<<strPop3Ip<<std::endl;
-    CTCPSSLClient tcpFd(LogPrinterSSL1);
-    if(!tcpFd.Connect(strPop3Ip, strPop3Port))
+    std::cout << "Pop3:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
+    CTCPSSLClient tcpFd([](const std::string &strLogMsg)
+                        { std::cout << strLogMsg << std::endl; });
+    if (!tcpFd.Connect(strPop3Ip, strPop3Port))
     {
-        return ;
+        return;
     }
     else
     {
-        std::cout<<"Pop3:  "<<strPop3Addr<<"  IP:  "<<strPop3Ip<<std::endl;
-        std::cout<<"Connect Succeed"<<std::endl;
+        std::cout << "Pop3:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
+        std::cout << "Connect Succeed" << std::endl;
     }
     char buff[2048] = {0};
 
@@ -47,22 +26,21 @@ void RecvEmailSSL(const std::string strUserName, std::string strPassword,bool bD
     {
         memset(buff, 0, 2048);
         int ret = tcpFd.Receive(buff, 2048, false);
-        if(ret <= 0)
+        if (ret <= 0)
         {
             break;
         }
-        std::string strValue(buff,ret);
-        if(bDebug)
+        std::string strValue(buff, ret);
+        if (bDebug)
         {
-            std::cout<<"S: "<<strValue<<std::endl;
+            std::cout << "S: " << strValue << std::endl;
         }
         handler.OnReceive(strValue);
         std::string strMsg = handler.GetSend();
         if (!strMsg.empty())
         {
-            std::cout<<"C:  "<<strMsg<<std::endl;
+            std::cout << "C:  " << strMsg << std::endl;
             tcpFd.Send(strMsg);
         }
     }
-
 }
