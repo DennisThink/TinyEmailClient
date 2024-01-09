@@ -25,7 +25,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     }
     if (bDebug)
     {
-        std::cout << "SMTP Addr: " << strSmtpIp << std::endl;
+        std::cout << "SMTP Addr: " << strSmtpIp<<":"<<strSmtpPort << std::endl;
     }
     if (!tcpFd.Connect(strSmtpIp, strSmtpPort))
     {

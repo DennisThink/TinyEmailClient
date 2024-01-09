@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            SendEmail(strUser, strPassword, strReciver,strCarbonCopy, strContent,strSubject,bDebugOn);
+            SendEmail(strUser, strPassword, strReciver,strCarbonCopy, strContent,strSubject,bDebugOn,strSmtpServer,strPort);
         }
     }
     return 0;
