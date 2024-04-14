@@ -1,9 +1,5 @@
 #include "ProtoUtil.h"
-#include <netdb.h>
-#include <sys/socket.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include "cross_plantform_net.h"
 #include <string.h>
 #include <iostream>
 namespace tiny_email
@@ -188,7 +184,6 @@ namespace tiny_email
   {
      struct hostent *hent = nullptr;
     struct in_addr **addr_list = nullptr;
-    int i;
     if ((hent = gethostbyname(strAddr.c_str())) == NULL)
     {
         //herror("gethostbyname error");

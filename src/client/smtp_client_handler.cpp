@@ -58,6 +58,7 @@ namespace tiny_email{
                     std::string strNext = GetNextSend(m_step);
                     m_strSend += strNext;
                 }
+                break;
             }
         }
         m_recvCmdVec.clear();

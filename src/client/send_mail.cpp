@@ -39,19 +39,22 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     {
         memset(buff, 0, 128);
         int nRecv = tcpFd.Receive(buff, 128, false);
-        std::string strValue(buff, nRecv);
-        strLog += strValue;
-        handler.OnReceive(strValue);
-        std::string strMsg = handler.GetSend();
-        if (!strMsg.empty())
+        if (nRecv > 0)
         {
-            if (bDebug)
+            std::string strValue(buff, nRecv);
+            strLog += strValue;
+            handler.OnReceive(strValue);
+            std::string strMsg = handler.GetSend();
+            if (!strMsg.empty())
             {
-                std::cout << "S: " << strLog << std::endl;
-                strLog.clear();
-                std::cout << "C: " << strMsg << std::endl;
+                if (bDebug)
+                {
+                    std::cout << "S: " << strLog << std::endl;
+                    strLog.clear();
+                    std::cout << "C: " << strMsg << std::endl;
+                }
+                tcpFd.Send(strMsg);
             }
-            tcpFd.Send(strMsg);
         }
     }
 }
