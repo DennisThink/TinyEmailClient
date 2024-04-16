@@ -182,11 +182,11 @@ namespace tiny_email
 
   std::string CProtoUtil::AddrToIp(const std::string strAddr)
   {
-     struct hostent *hent = nullptr;
+    struct hostent *hent = nullptr;
     struct in_addr **addr_list = nullptr;
     if ((hent = gethostbyname(strAddr.c_str())) == NULL)
     {
-        //herror("gethostbyname error");
+        std::cout << "HERROR: " << h_errno << std::endl;
         return "";
     }
     addr_list = (struct in_addr **)hent->h_addr_list;

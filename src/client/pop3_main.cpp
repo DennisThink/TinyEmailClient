@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            RecvEmail(strUser, strPassword,bDebugOn,strPort);
+            Pop3RecvEmail(strUser, strPassword,bDebugOn,strPort);
         }
     }
     return 0;

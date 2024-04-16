@@ -9,7 +9,7 @@ namespace tiny_email
                 m_strUserName = strUserName;
                 m_strPassword = strPassword;
                 std::size_t index = m_strUserName.find_first_of("@");
-                m_strPop3Addr = "pop." + m_strUserName.substr(index + 1);
+                m_strPop3Addr = "pop3." + m_strUserName.substr(index + 1);
                 m_strUserName = m_strUserName.substr(0, index);
                 m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_BEGIN;
         }

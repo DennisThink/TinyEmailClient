@@ -114,6 +114,20 @@ namespace tiny_email
         IMAP_CMD_UNKNOWN_CMD,
     };
 
+    enum IMAP_CLIENT_STEP_T
+    {
+        IMAP_CLIENT_BEGIN,
+        IMAP_CLIENT_GET_CAPABILITY,
+        IMAP_CLIENT_LOGIN,
+        IMAP_CLIENT_SELECT_INBOX,
+        IMAP_CLIENT_CHECK_INBOX,
+        IMAP_CLIENT_SEARCH_ALL,
+        IMAP_CLIENT_FETCH_ONE,
+        IMAP_CLIENT_FETCH_FINISHED,
+        IMAP_CLIENT_LOGOUT,
+        IMAP_CLIENT_END,
+    };
+
     enum IMAP_STEP_t
     {
         IMAP_STEP_SERVER_ON_CONNECTED,
