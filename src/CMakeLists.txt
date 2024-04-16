@@ -7,6 +7,7 @@ add_definitions(-DWINDOWS)
 add_definitions(-DWINDOWS_OS)
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON)
 else()
+add_definitions(-DLINUX_OS)
 SET(CMAKE_CXX_FLAGS "-g")
 endif()
 

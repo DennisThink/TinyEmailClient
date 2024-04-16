@@ -12,7 +12,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <WinSock2.h>
 #define OS_PLANTFORM 2
 #endif
 
