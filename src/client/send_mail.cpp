@@ -20,7 +20,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
 
     if (strSmtpServer.empty())
     {
-        std::string strSmtpAddr = handler.GetSmtpAddr();
+        std::string strSmtpAddr = handler.GetServerAddr();
         strSmtpIp = tiny_email::CProtoUtil::AddrToIp(strSmtpAddr);
     }
     if (bDebug)
@@ -35,7 +35,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
 
     std::string strLog;
     handler.SendMail(strReceiver, strCarbonCopy, Content, strSubject);
-    while (!handler.FinishOrFailed())
+    while (!handler.IsFinished())
     {
         memset(buff, 0, 128);
         int nRecv = tcpFd.Receive(buff, 128, false);
@@ -44,7 +44,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
             std::string strValue(buff, nRecv);
             strLog += strValue;
             handler.OnReceive(strValue);
-            std::string strMsg = handler.GetSend();
+            std::string strMsg = handler.GetResponse();
             if (!strMsg.empty())
             {
                 if (bDebug)

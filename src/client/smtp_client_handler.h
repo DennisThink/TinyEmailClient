@@ -4,16 +4,19 @@
 #include <vector>
 #include "CProtoCode.h"
 #include "CProtoCmd.h"
+#include "EmailClientProtoInterface.h"
 namespace tiny_email{
-class CSmtpClientHandler
+class CSmtpClientHandler:public EmailClientProtoInterface
     {
     public:
         CSmtpClientHandler(const std::string strUserName, const std::string strPassword);
-        std::string GetSmtpAddr();
         bool SendMail(const std::string strReciver,const std::string strCarbonCopy,const std::string strMailContent,const std::string strSubject="");
-        bool FinishOrFailed();
-        void OnReceive(const std::string strValue);
-        std::string GetSend();
+
+        virtual bool IsFinished() override;
+        virtual std::string GetServerAddr() override;
+        virtual int GetServerPort() override;
+        virtual int GetServerSSLport() override;
+        virtual void OnReceive(const std::string strValue) override;
     private:
         std::string GetNextSend(const Smtp_Step_t curStep);
         Smtp_Step_t GetNextCmd(const Smtp_Step_t curStep, const ProtoCode_t code);

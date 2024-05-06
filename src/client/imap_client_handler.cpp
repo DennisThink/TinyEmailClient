@@ -2,14 +2,14 @@
 #include <iostream>
 namespace tiny_email
 {
-	CImapClientHandler::CImapClientHandler(const std::string strUserName, const std::string strPassword)
+	CImapClientHandler::CImapClientHandler(const std::string strUserName, const std::string strPassword):EmailClientProtoInterface(strUserName,strPassword)
 	{
 		m_strUserName = strUserName;
 		m_strPassword = strPassword;
 		m_strUserName = strUserName;
 		m_strPassword = strPassword;
 		std::size_t index = m_strUserName.find_first_of("@");
-		m_strImapAddr = "imap." + m_strUserName.substr(index + 1);
+		m_strServerAddr = "imap." + m_strUserName.substr(index + 1);
 		m_strUserName = m_strUserName.substr(0, index);
 		m_nCommandIndex = 1;
 		m_step = IMAP_CLIENT_BEGIN;
@@ -32,14 +32,20 @@ namespace tiny_email
 		{IMAP_CLIENT_LOGIN,PARSE_IMAP_RESULT::PARSE_IMAP_SUCCEED,IMAP_CLIENT_END},
 	};
 	const std::size_t ARRAY_SIZE = sizeof(imapArray) / sizeof(imapArray[0]);
-	std::string CImapClientHandler::GetPop3Addr()
+
+   std::string CImapClientHandler::GetServerAddr()
 	{
-		return m_strImapAddr;
+	   return m_strServerAddr;
 	}
-	bool CImapClientHandler::FinishOrFailed()
+    int CImapClientHandler::GetServerPort()
 	{
-		return false;
+		return 143;
 	}
+	int CImapClientHandler::GetServerSSLport()
+	{
+		return 993;
+	 }
+
 	void CImapClientHandler::OnReceive(const std::string strValue)
 	{
 		for (std::size_t i = 0; i < ARRAY_SIZE; i++)
@@ -88,11 +94,5 @@ namespace tiny_email
 			return true;
 		}
 		return false;
-	}
-	std::string CImapClientHandler::GetSend()
-	{
-		std::string strResult = m_strSend;
-		m_strSend.clear();
-		return strResult;
 	}
 }

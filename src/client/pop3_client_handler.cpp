@@ -4,29 +4,20 @@
 #include "CPop3ProtoCmd.h"
 namespace tiny_email
 {
-        CPop3ClientHandler::CPop3ClientHandler(const std::string strUserName, const std::string strPassword)
+        CPop3ClientHandler::CPop3ClientHandler(const std::string strEmailAddr, const std::string strPassword):EmailClientProtoInterface(m_strUserName,strPassword)
         {
-                m_strUserName = strUserName;
-                m_strPassword = strPassword;
-                std::size_t index = m_strUserName.find_first_of("@");
-                m_strPop3Addr = "pop3." + m_strUserName.substr(index + 1);
-                m_strUserName = m_strUserName.substr(0, index);
-                m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_BEGIN;
+            std::string strEmail = strEmailAddr;
+            std::size_t index = strEmail.find_first_of("@");
+            m_strServerAddr = "pop3." + strEmail.substr(index + 1);
+            m_strUserName = strEmail.substr(0, index);
+            m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_BEGIN;
         }
-        std::string CPop3ClientHandler::GetPop3Addr()
-        {
-                return m_strPop3Addr;
-        }
-        bool CPop3ClientHandler::FinishOrFailed()
+
+        bool CPop3ClientHandler::IsFinished()
         {
                 return false;
         }
-        std::string CPop3ClientHandler::GetSend()
-        {
-                std::string strResult = m_strSend;
-                m_strSend.clear();
-                return strResult;
-        }
+
         bool CPop3ClientHandler::IsServerRspCompleted(const std::string strRsp)
         {
                 if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_LIST_ALL)
@@ -83,6 +74,21 @@ namespace tiny_email
                 }
                 UpdateCurEmail();
                 return;
+        }
+        
+        std::string CPop3ClientHandler::GetServerAddr()
+        {
+            return m_strServerAddr;
+        }
+        
+        int CPop3ClientHandler::GetServerPort()
+        {
+            return 110;
+        }
+        
+        int CPop3ClientHandler::GetServerSSLport()
+        {
+            return 995;
         }
 
         void CPop3ClientHandler::UpdateCurEmail()
@@ -142,7 +148,6 @@ namespace tiny_email
                         m_strRecv.clear();
                 }
         }
-
         std::string CPop3ClientHandler::GetNextSend(const POP3_CLIENT_STEP_t curStep)
         {
                 if (curStep == POP3_CLIENT_STEP_t::POP3_CLIENT_SEND_USER_NAME)

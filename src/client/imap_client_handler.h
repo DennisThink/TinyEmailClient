@@ -4,6 +4,7 @@
 #include <vector>
 #include "CProtoCode.h"
 #include "CProtoCmd.h"
+#include "EmailClientProtoInterface.h"
 namespace tiny_email
 {
     struct ImapEmailElem_t
@@ -11,16 +12,19 @@ namespace tiny_email
         std::string m_strIndex;
         std::size_t m_emailSize;
     };
-    class CImapClientHandler
+    class CImapClientHandler:public EmailClientProtoInterface
     {
     public:
         CImapClientHandler(const std::string strUserName, const std::string strPassword);
-        std::string GetPop3Addr();
-        bool FinishOrFailed();
-        void OnReceive(const std::string strValue);
+        //std::string GetPop3Addr();
+        //bool FinishOrFailed();
+        
         bool IsServerRspCompleted(const std::string strRsp);
-        std::string GetSend();
-
+        //std::string Get();
+        virtual void OnReceive(const std::string strValue) override;
+        virtual std::string GetServerAddr() override;
+        virtual int GetServerPort() override;
+        virtual int GetServerSSLport() override;
     private:
         void HandleListAllRsp(const std::string strRsp);
         void HandleGetOneUnread(const std::string strValue);

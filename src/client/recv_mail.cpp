@@ -22,7 +22,7 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
 #endif
         {
             tiny_email::CImapClientHandler handler(strUserName, strPassword);
-            std::string strPop3Addr = handler.GetPop3Addr();
+            std::string strPop3Addr = handler.GetServerAddr();
             std::string strPop3Ip = tiny_email::CProtoUtil::AddrToIp(strPop3Addr);
             std::string strPop3Port = strPort;
             std::cout << "IMAP:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
@@ -39,7 +39,7 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
             }
             char buff[2048] = {0};
 
-            while (!handler.FinishOrFailed())
+            while (!handler.IsFinished())
             {
                 memset(buff, 0, 2048);
                 int ret = tcpFd.Receive(buff, 2048, false);
@@ -53,7 +53,7 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
                     std::cout << "S: " << strValue << std::endl;
                 }
                 handler.OnReceive(strValue);
-                std::string strMsg = handler.GetSend();
+                std::string strMsg = handler.GetResponse();
                 if (!strMsg.empty())
                 {
                     std::cout << "C:  " << strMsg << std::endl;
@@ -97,7 +97,7 @@ void Pop3RecvEmail(const std::string strUserName, std::string strPassword, bool 
 
         {
             tiny_email::CPop3ClientHandler handler(strUserName, strPassword);
-            std::string strPop3Addr = handler.GetPop3Addr();
+            std::string strPop3Addr = handler.GetServerAddr();
             std::string strPop3Ip = tiny_email::CProtoUtil::AddrToIp(strPop3Addr);
             std::string strPop3Port = strPort;
             std::cout << "Pop3:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
@@ -114,7 +114,7 @@ void Pop3RecvEmail(const std::string strUserName, std::string strPassword, bool 
             }
             char buff[2048] = {0};
 
-            while (!handler.FinishOrFailed())
+            while (!handler.IsFinished())
             {
                 memset(buff, 0, 2048);
                 int ret = tcpFd.Receive(buff, 2048, false);
@@ -128,7 +128,7 @@ void Pop3RecvEmail(const std::string strUserName, std::string strPassword, bool 
                     std::cout << "S: " << strValue << std::endl;
                 }
                 handler.OnReceive(strValue);
-                std::string strMsg = handler.GetSend();
+                std::string strMsg = handler.GetResponse();
                 if (!strMsg.empty())
                 {
                     std::cout << "C:  " << strMsg << std::endl;

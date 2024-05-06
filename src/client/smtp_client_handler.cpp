@@ -63,21 +63,35 @@ namespace tiny_email{
         }
         m_recvCmdVec.clear();
     }
-    std::string CSmtpClientHandler::GetSmtpAddr()
-    {
-        return m_strSmtpAddr;
-    }
-    CSmtpClientHandler::CSmtpClientHandler(const std::string strUserName, const std::string strPassword)
+
+    CSmtpClientHandler::CSmtpClientHandler(const std::string strUserName, const std::string strPassword):EmailClientProtoInterface(strUserName,strPassword)
     {
         m_strEmailAddr = strUserName;
         std::size_t index = strUserName.find_first_of("@");
         m_strUserName = strUserName.substr(0, index);
         m_strUserName = m_strUserName;
-        m_strSmtpAddr = "smtp." + strUserName.substr(index + 1);
+        m_strServerAddr = "smtp." + strUserName.substr(index + 1);
         m_strPassword = strPassword;
         m_step = SMTP_STEP_BEGIN;
     }
-    bool CSmtpClientHandler::FinishOrFailed()
+
+
+    std::string CSmtpClientHandler::GetServerAddr()
+    {
+        return m_strServerAddr;
+    }
+
+    int CSmtpClientHandler::GetServerPort()
+    {
+        return 25;
+    }
+    
+    int CSmtpClientHandler::GetServerSSLport()
+    {
+        return 0;
+    }
+
+    bool CSmtpClientHandler::IsFinished()
     {
         if(m_step == SEND_FINISH || m_step == SMTP_FAILED)
         {
@@ -94,12 +108,7 @@ namespace tiny_email{
         return true;
     }
 
-    std::string CSmtpClientHandler::GetSend()
-    {
-        std::string strResult = m_strSend;
-        m_strSend.clear();
-        return strResult;
-    }
+
     Smtp_Step_t CSmtpClientHandler::GetNextCmd(const Smtp_Step_t curStep, const ProtoCode_t code)
     {
         for (int i = 0; i < ARRAY_SIZE; i++)
