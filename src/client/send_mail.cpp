@@ -8,14 +8,14 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     g_bDebugOn = bDebug;
     tiny_email::CSmtpClientHandler handler(strUserName, strPassword);
     CTCPClient tcpFd([](const std::string &strLogMsg)
-                     { if(g_bDebugOn){
+    { if(g_bDebugOn){
     std::cout << strLogMsg << std::endl; 
     } });
     std::string strSmtpPort = strPort;
     std::string strSmtpIp = "";
     if (strSmtpPort.empty())
     {
-        strSmtpPort = "25";
+        strSmtpPort = std::to_string(handler.GetServerPort());
     }
 
     if (strSmtpServer.empty())
@@ -33,7 +33,7 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
     }
     char buff[128] = {0};
 
-    std::string strLog;
+    std::string strServerRsp;
     handler.SendMail(strReceiver, strCarbonCopy, Content, strSubject);
     while (!handler.IsFinished())
     {
@@ -42,19 +42,21 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
         if (nRecv > 0)
         {
             std::string strValue(buff, nRecv);
-            strLog += strValue;
-            handler.OnReceive(strValue);
-            std::string strMsg = handler.GetResponse();
-            if (!strMsg.empty())
+            strServerRsp += strValue;
+            if (handler.IsServerRspCompleted(strServerRsp))
             {
-                if (bDebug)
+                handler.OnServerCommand(strServerRsp);
+                std::string strClientReq = handler.GetResponse();
+                if (!strClientReq.empty())
                 {
-                    std::cout << "S: " << strLog << std::endl;
-                    strLog.clear();
-                    std::cout << "C: " << strMsg << std::endl;
+                    if (bDebug)
+                    {
+                        std::cout << "S: " << strServerRsp << std::endl;
+                        std::cout << "C: " << strClientReq << std::endl;
+                    }
+                    tcpFd.Send(strClientReq);
                 }
-                tcpFd.Send(strMsg);
-            }
+            }          
         }
     }
 }

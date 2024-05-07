@@ -12,13 +12,13 @@ namespace tiny_email
     {
     public:
         CImapClientHandler(const std::string strUserName, const std::string strPassword);
-
-        
-        bool IsServerRspCompleted(const std::string strRsp);
-        virtual void OnReceive(const std::string strValue) override;
+        virtual bool IsServerRspCompleted(const std::string strRsp) override;
+        virtual void OnServerCommand(const std::string strServerRsp) override;
         virtual std::string GetServerAddr() override;
         virtual int GetServerPort() override;
         virtual int GetServerSSLport() override;
+    protected:
+
     private:
         void HandleListAllRsp(const std::string strRsp);
         void HandleGetOneUnread(const std::string strValue);

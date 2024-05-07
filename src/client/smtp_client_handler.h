@@ -16,7 +16,7 @@ class CSmtpClientHandler:public EmailClientProtoInterface
         virtual std::string GetServerAddr() override;
         virtual int GetServerPort() override;
         virtual int GetServerSSLport() override;
-        virtual void OnReceive(const std::string strValue) override;
+        virtual void OnServerCommand(const std::string strServerCmd) override;
     private:
         std::string GetNextSend(const Smtp_Step_t curStep);
         Smtp_Step_t GetNextCmd(const Smtp_Step_t curStep, const ProtoCode_t code);

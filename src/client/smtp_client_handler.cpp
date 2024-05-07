@@ -34,7 +34,7 @@ namespace tiny_email{
         {SEND_DATA_BODY,CODE_354,SEND_DATA_TAIL},
         {SEND_DATA_TAIL,CODE_250,SEND_FINISH} };
     const int ARRAY_SIZE = sizeof(Array) / sizeof(Array[0]);
-    void CSmtpClientHandler::OnReceive(const std::string strValue)
+    void CSmtpClientHandler::OnServerCommand(const std::string strValue)
     {
         std::vector<std::string> strArray = CProtoUtil::SplitStringByLine(strValue);
         for (const auto& item : strArray)

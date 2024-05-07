@@ -46,7 +46,7 @@ namespace tiny_email
 		return 993;
 	 }
 
-	void CImapClientHandler::OnReceive(const std::string strValue)
+	void CImapClientHandler::OnServerCommand(const std::string strValue)
 	{
 		for (std::size_t i = 0; i < ARRAY_SIZE; i++)
 		{

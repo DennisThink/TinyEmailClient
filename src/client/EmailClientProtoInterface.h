@@ -11,11 +11,12 @@ namespace tiny_email
         virtual std::string GetServerAddr();
         virtual int GetServerPort();
         virtual int GetServerSSLport();
-        virtual void OnReceive(const std::string strValue);
-        virtual std::string GetResponse();
-        virtual bool IsFinished();
-    protected:
         virtual bool IsServerRspCompleted(const std::string strRsp);
+        virtual void OnServerCommand(const std::string strMsg);
+        virtual bool IsFinished();
+        std::string GetResponse();
+    protected:
+
     protected:
         std::string m_strEmailAddr;
         std::string m_strPassword;

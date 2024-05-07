@@ -15,16 +15,17 @@ namespace tiny_email
         virtual std::string GetServerAddr() override;
         virtual int GetServerPort() override;
         virtual int GetServerSSLport() override;
-        virtual void OnReceive(const std::string strValue) override;
+        virtual bool IsServerRspCompleted(const std::string strRsp) override;
+        virtual void OnServerCommand(const std::string strRsp) override;
         virtual bool IsFinished() override;
     private:
-        bool IsServerRspCompleted(const std::string strRsp);
+
         void HandleListAllRsp(const std::string strRsp);
         void HandleGetOneUnread(const std::string strValue);
         void UpdateCurEmail();
         void HandleServerRsp(const std::string strRsp);
-        std::string GetNextSend(const POP3_CLIENT_STEP_t curStep);
         POP3_CLIENT_STEP_t GetNextCmd(const POP3_CLIENT_STEP_t curStep, const Pop3Code_t code);
+        std::string CmdToRequestContext(const POP3_CLIENT_STEP_t curStep);
         std::vector<CSmtpProtoCmd> m_recvCmdVec;
         POP3_CLIENT_STEP_t m_step;
 

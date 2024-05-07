@@ -125,23 +125,23 @@ namespace tiny_email
                 HandleListAllRsp(strValue);
                 m_step = POP3_CLIENT_GET_ONE_UNREAD;
                 m_step = GetNextCmd(m_step, POP3_ANY);
-                m_strSend = GetNextSend(m_step);
+                m_strSend = CmdToRequestContext(m_step);
                 return;
             }
             if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD)
             {
                 HandleGetOneUnread(strValue);
                 m_step = GetNextCmd(m_step, POP3_ANY);
-                m_strSend = GetNextSend(m_step);
+                m_strSend = CmdToRequestContext(m_step);
                 return;
             }
             CPop3ProtoCmd curCmd = CPop3ProtoCmd::FromString(strValue);
             m_step = GetNextCmd(m_step, curCmd.GetCode());
-            m_strSend = GetNextSend(m_step);
+            m_strSend = CmdToRequestContext(m_step);
 
         }
 
-        void CPop3ClientHandler::OnReceive(const std::string strValue)
+        void CPop3ClientHandler::OnServerCommand(const std::string strValue)
         {
             m_strRecv += strValue;
             if (IsServerRspCompleted(m_strRecv))
@@ -152,7 +152,7 @@ namespace tiny_email
             }
         }
 
-        std::string CPop3ClientHandler::GetNextSend(const POP3_CLIENT_STEP_t curStep)
+        std::string CPop3ClientHandler::CmdToRequestContext(const POP3_CLIENT_STEP_t curStep)
         {
                 if (curStep == POP3_CLIENT_STEP_t::POP3_CLIENT_SEND_USER_NAME)
                 {

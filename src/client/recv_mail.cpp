@@ -38,26 +38,30 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
                 std::cout << "Connect Succeed" << std::endl;
             }
             char buff[2048] = {0};
-
+            std::string strServerRsp;
             while (!handler.IsFinished())
             {
                 memset(buff, 0, 2048);
-                int ret = tcpFd.Receive(buff, 2048, false);
-                if (ret <= 0)
+                int nRecv = tcpFd.Receive(buff, 2048, false);
+                if (nRecv > 0)
                 {
-                    break;
-                }
-                std::string strValue(buff, ret);
-                if (bDebug)
-                {
-                    std::cout << "S: " << strValue << std::endl;
-                }
-                handler.OnReceive(strValue);
-                std::string strMsg = handler.GetResponse();
-                if (!strMsg.empty())
-                {
-                    std::cout << "C:  " << strMsg << std::endl;
-                    tcpFd.Send(strMsg);
+                    std::string strValue(buff, nRecv);
+                    strServerRsp += strValue;
+                    if (handler.IsServerRspCompleted(strServerRsp))
+                    {
+                        handler.OnServerCommand(strServerRsp);
+                        strServerRsp.clear();
+                        std::string strClientReq = handler.GetResponse();
+                        if (!strClientReq.empty())
+                        {
+                            if (bDebug)
+                            {
+                                std::cout << "S: " << strServerRsp << std::endl;
+                                std::cout << "C: " << strClientReq << std::endl;
+                            }
+                            tcpFd.Send(strClientReq);
+                        }
+                    }
                 }
             }
         }
@@ -127,7 +131,7 @@ void Pop3RecvEmail(const std::string strUserName, std::string strPassword, bool 
                 {
                     std::cout << "S: " << strValue << std::endl;
                 }
-                handler.OnReceive(strValue);
+                handler.OnServerCommand(strValue);
                 std::string strMsg = handler.GetResponse();
                 if (!strMsg.empty())
                 {

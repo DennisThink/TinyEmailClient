@@ -22,14 +22,17 @@ namespace tiny_email
         return -1;
     }
     
-    void EmailClientProtoInterface::OnReceive(const std::string strValue)
-    {
-
-    }
-    
     bool EmailClientProtoInterface::IsServerRspCompleted(const std::string strRsp)
     {
         return false;
+    }
+
+    void EmailClientProtoInterface::OnServerCommand(const std::string strMsg)
+    {
+        if (strMsg.empty())
+        {
+            return;
+        }
     }
 
     std::string EmailClientProtoInterface::GetResponse()
