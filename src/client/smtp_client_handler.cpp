@@ -64,14 +64,12 @@ namespace tiny_email{
         m_recvCmdVec.clear();
     }
 
-    CSmtpClientHandler::CSmtpClientHandler(const std::string strUserName, const std::string strPassword):EmailClientProtoInterface(strUserName,strPassword)
+    CSmtpClientHandler::CSmtpClientHandler(const std::string strEmailAddr, const std::string strPassword):EmailClientProtoInterface(strEmailAddr,strPassword)
     {
-        m_strEmailAddr = strUserName;
-        std::size_t index = strUserName.find_first_of("@");
-        m_strUserName = strUserName.substr(0, index);
-        m_strUserName = m_strUserName;
-        m_strServerAddr = "smtp." + strUserName.substr(index + 1);
-        m_strPassword = strPassword;
+        m_strEmailAddr = strEmailAddr;
+        std::size_t index = m_strEmailAddr.find_first_of("@");
+        m_strUserName = m_strEmailAddr.substr(0, index);
+        m_strServerAddr = "smtp." + m_strEmailAddr.substr(index + 1);
         m_step = SMTP_STEP_BEGIN;
     }
 
@@ -129,7 +127,7 @@ namespace tiny_email{
         {
         case SEND_HELO:
         {
-            return "HELO " + m_strSmtpAddr+"\r\n";
+            return "HELO " + m_strServerAddr +"\r\n";
         }
         break;
         case SEND_AUTH_LOGIN:

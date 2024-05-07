@@ -5,22 +5,16 @@
 #include "CProtoCode.h"
 #include "CProtoCmd.h"
 #include "EmailClientProtoInterface.h"
+#include "email_struct.h"
 namespace tiny_email
 {
-    struct ImapEmailElem_t
-    {
-        std::string m_strIndex;
-        std::size_t m_emailSize;
-    };
     class CImapClientHandler:public EmailClientProtoInterface
     {
     public:
         CImapClientHandler(const std::string strUserName, const std::string strPassword);
-        //std::string GetPop3Addr();
-        //bool FinishOrFailed();
+
         
         bool IsServerRspCompleted(const std::string strRsp);
-        //std::string Get();
         virtual void OnReceive(const std::string strValue) override;
         virtual std::string GetServerAddr() override;
         virtual int GetServerPort() override;
@@ -46,7 +40,7 @@ namespace tiny_email
         std::string m_strSend;
         std::string m_strRecv;
         std::string m_strListAll;
-        std::vector<ImapEmailElem_t> m_unreadIndexVec;
+        std::vector<EmailElement_t> m_unreadIndexVec;
         std::string m_strEmailFormat;
         std::string m_strCurMailIndex;
         std::size_t m_nCurEmailCount;

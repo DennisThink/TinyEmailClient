@@ -17,6 +17,20 @@ namespace tiny_email
         {
                 return false;
         }
+        std::string CPop3ClientHandler::GetServerAddr()
+        {
+            return m_strServerAddr;
+        }
+
+        int CPop3ClientHandler::GetServerPort()
+        {
+            return 110;
+        }
+
+        int CPop3ClientHandler::GetServerSSLport()
+        {
+            return 995;
+        }
 
         bool CPop3ClientHandler::IsServerRspCompleted(const std::string strRsp)
         {
@@ -55,56 +69,43 @@ namespace tiny_email
 
         void CPop3ClientHandler::HandleListAllRsp(const std::string strRsp)
         {
-                std::vector<std::string> result = CProtoUtil::SplitStringByLine(strRsp);
-                m_unreadIndexVec.clear();
-                for (std::size_t i = 1; i < result.size() - 1; i++)
+            std::vector<std::string> result = CProtoUtil::SplitStringByLine(strRsp);
+            m_unreadIndexVec.clear();
+            for (std::size_t i = 1; i < result.size() - 1; i++)
+            {
+                std::size_t index = result[i].find_first_of(' ');
+                std::string strIndex = result[i].substr(0, index);
+                std::size_t count = 0;//
+                m_unreadIndexVec.push_back({ strIndex, count });
+            }
+            {
+                std::cout << "----------------------List All-------------------------------" << std::endl;
+                for (auto item : m_unreadIndexVec)
                 {
-                        std::size_t index = result[i].find_first_of(' ');
-                        std::string strIndex = result[i].substr(0, index);
-                        std::size_t count = 0;//
-                        m_unreadIndexVec.push_back({strIndex, count});
+                    std::cout << item.m_strIndex << "------" << item.m_emailSize << std::endl;
                 }
-                {
-                        std::cout << "----------------------List All-------------------------------" << std::endl;
-                        for (auto item : m_unreadIndexVec)
-                        {
-                                std::cout << item.m_strIndex << "------" << item.m_emailSize << std::endl;
-                        }
-                        std::cout << "----------------------List All-------------------------------" << std::endl;
-                }
-                UpdateCurEmail();
-                return;
+                std::cout << "----------------------List All-------------------------------" << std::endl;
+            }
+            UpdateCurEmail();
+            return;
         }
         
-        std::string CPop3ClientHandler::GetServerAddr()
-        {
-            return m_strServerAddr;
-        }
         
-        int CPop3ClientHandler::GetServerPort()
-        {
-            return 110;
-        }
-        
-        int CPop3ClientHandler::GetServerSSLport()
-        {
-            return 995;
-        }
 
         void CPop3ClientHandler::UpdateCurEmail()
         {
-               
-                if (!m_unreadIndexVec.empty())
-                {
-                        m_strCurMailIndex = m_unreadIndexVec.begin()->m_strIndex;
-                        m_nCurEmailCount = m_unreadIndexVec.begin()->m_emailSize;
-                        m_unreadIndexVec.erase(m_unreadIndexVec.begin());
-                }
-                else
-                {
-                        m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT;
-                }
+            if (!m_unreadIndexVec.empty())
+            {
+                m_strCurMailIndex = m_unreadIndexVec.begin()->m_strIndex;
+                m_nCurEmailCount = m_unreadIndexVec.begin()->m_emailSize;
+                m_unreadIndexVec.erase(m_unreadIndexVec.begin());
+            }
+            else
+            {
+                m_step = POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT;
+            }
         }
+
         void CPop3ClientHandler::HandleGetOneUnread(const std::string strValue)
         {
                 m_strEmailFormat += strValue;
@@ -116,38 +117,41 @@ namespace tiny_email
                 UpdateCurEmail();
              
         }
+
         void CPop3ClientHandler::HandleServerRsp(const std::string strValue)
         {
-                if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_LIST_ALL)
-                {
-                        HandleListAllRsp(strValue);
-                        m_step = POP3_CLIENT_GET_ONE_UNREAD;
-                        m_step = GetNextCmd(m_step, POP3_ANY);
-                        m_strSend = GetNextSend(m_step);
-                        return;
-                }
-                if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD)
-                {
-                        HandleGetOneUnread(strValue);
-                        m_step = GetNextCmd(m_step, POP3_ANY);
-                        m_strSend = GetNextSend(m_step);
-                        return;
-                }
-                CPop3ProtoCmd curCmd = CPop3ProtoCmd::FromString(strValue);
-                m_step = GetNextCmd(m_step, curCmd.GetCode());
+            if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_LIST_ALL)
+            {
+                HandleListAllRsp(strValue);
+                m_step = POP3_CLIENT_GET_ONE_UNREAD;
+                m_step = GetNextCmd(m_step, POP3_ANY);
                 m_strSend = GetNextSend(m_step);
+                return;
+            }
+            if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD)
+            {
+                HandleGetOneUnread(strValue);
+                m_step = GetNextCmd(m_step, POP3_ANY);
+                m_strSend = GetNextSend(m_step);
+                return;
+            }
+            CPop3ProtoCmd curCmd = CPop3ProtoCmd::FromString(strValue);
+            m_step = GetNextCmd(m_step, curCmd.GetCode());
+            m_strSend = GetNextSend(m_step);
+
         }
 
         void CPop3ClientHandler::OnReceive(const std::string strValue)
         {
-                m_strRecv += strValue;
-                if (IsServerRspCompleted(m_strRecv))
-                {
-                        std::string strRsp = m_strRecv;
-                        HandleServerRsp(strRsp);
-                        m_strRecv.clear();
-                }
+            m_strRecv += strValue;
+            if (IsServerRspCompleted(m_strRecv))
+            {
+                std::string strRsp = m_strRecv;
+                HandleServerRsp(strRsp);
+                m_strRecv.clear();
+            }
         }
+
         std::string CPop3ClientHandler::GetNextSend(const POP3_CLIENT_STEP_t curStep)
         {
                 if (curStep == POP3_CLIENT_STEP_t::POP3_CLIENT_SEND_USER_NAME)

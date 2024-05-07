@@ -24,14 +24,16 @@ class CSmtpClientHandler:public EmailClientProtoInterface
         Smtp_Step_t m_step;
         bool m_bAuthFinish;
         std::string m_strEmailAddr;
-        std::string m_strSmtpAddr;
         std::string m_strUserName;
-        std::string m_strPassword;
         std::string m_strReceiverAddr;
-        std::string m_strContent;
-        std::string m_strSend;
         std::string m_strCarbonCopy;
         std::string m_strSubject;
+        std::string m_strContent;
+ 
+
+        std::string m_strSend;
+
+
     };
 }
 #endif

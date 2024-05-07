@@ -5,13 +5,9 @@
 #include "CProtoCode.h"
 #include "CProtoCmd.h"
 #include "EmailClientProtoInterface.h"
+#include "email_struct.h"
 namespace tiny_email
 {
-    struct Pop3EmailElem_t
-    {
-        std::string m_strIndex;
-        std::size_t m_emailSize;
-    };
     class CPop3ClientHandler:public EmailClientProtoInterface
     {
     public:
@@ -33,17 +29,14 @@ namespace tiny_email
         POP3_CLIENT_STEP_t m_step;
 
         bool m_bAuthFinish;
-        std::string m_strEmailAddr;
-        std::string m_strPop3Addr;
-        std::string m_strUserName;
-        std::string m_strPassword;
         std::string m_strReceiverAddr;
         std::string m_strContent;
         std::string m_strSend;
         std::string m_strRecv;
         std::string m_strListAll;
-        std::vector<Pop3EmailElem_t> m_unreadIndexVec;
+        std::vector<EmailElement_t> m_unreadIndexVec;
         std::string m_strEmailFormat;
+        std::string m_strUserName;
         std::string m_strCurMailIndex;
         std::size_t m_nCurEmailCount;
         std::string m_strCurMailBegin;
