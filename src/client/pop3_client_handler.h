@@ -19,7 +19,6 @@ namespace tiny_email
         virtual void OnServerCommand(const std::string strRsp) override;
         virtual bool IsFinished() override;
     private:
-
         void HandleListAllRsp(const std::string strRsp);
         void HandleGetOneUnread(const std::string strValue);
         void UpdateCurEmail();
