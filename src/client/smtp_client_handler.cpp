@@ -50,13 +50,13 @@ namespace tiny_email{
             {
                 m_step = GetNextCmd(m_step, item.GetCode());
                 std::string strNext = GetNextSend(m_step);
-                m_strSend += strNext;
+                m_strResponse += strNext;
                 if (m_step == AUTH_SUCCESS)
                 {
                     m_bAuthFinish = true;
                     m_step = GetNextCmd(m_step,CODE_ANY);
                     std::string strNext = GetNextSend(m_step);
-                    m_strSend += strNext;
+                    m_strResponse += strNext;
                 }
                 break;
             }
@@ -64,6 +64,14 @@ namespace tiny_email{
         m_recvCmdVec.clear();
     }
 
+    bool CSmtpClientHandler::IsServerRspCompleted(const std::string strRsp)
+    {
+        if (strRsp.find("\r\n") != std::string::npos)
+        {
+            return true;
+        }
+        return false;
+    }
     CSmtpClientHandler::CSmtpClientHandler(const std::string strEmailAddr, const std::string strPassword):EmailClientProtoInterface(strEmailAddr,strPassword)
     {
         m_strEmailAddr = strEmailAddr;

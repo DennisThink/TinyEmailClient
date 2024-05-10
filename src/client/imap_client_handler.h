@@ -37,7 +37,6 @@ namespace tiny_email
         std::string m_strPassword;
         std::string m_strReceiverAddr;
         std::string m_strContent;
-        std::string m_strSend;
         std::string m_strRecv;
         std::string m_strListAll;
         std::vector<EmailElement_t> m_unreadIndexVec;

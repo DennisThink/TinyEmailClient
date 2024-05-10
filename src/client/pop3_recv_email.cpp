@@ -37,28 +37,33 @@ void Pop3RecvEmail(const std::string strUserName, std::string strPassword, bool 
                 std::cout << "Pop3:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
                 std::cout << "Connect Succeed" << std::endl;
             }
-            char buff[2048] = {0};
+            char buff[128] = {0};
 
+            std::string strRsp;
             while (!handler.IsFinished())
             {
-                memset(buff, 0, 2048);
-                int ret = tcpFd.Receive(buff, 2048, false);
-                if (ret <= 0)
+                memset(buff, 0, 128);
+                int ret = tcpFd.Receive(buff, 127, false);
+                if (ret > 0)
                 {
-                    break;
+                    strRsp += std::string(buff);
+                    if (handler.IsServerRspCompleted(strRsp))
+                    {
+                        handler.OnServerCommand(strRsp);
+                        std::string strMsg = handler.GetResponse();
+                        if (!strMsg.empty())
+                        {
+                            tcpFd.Send(strMsg);
+                        }
+                        if (bDebug)
+                        {
+                            std::cout << "S: " << strRsp << std::endl;
+                            std::cout << "C: " << strMsg << std::endl;
+                        }
+                        strRsp.clear();
+                    }
                 }
-                std::string strValue(buff, ret);
-                if (bDebug)
-                {
-                    std::cout << "S: " << strValue << std::endl;
-                }
-                handler.OnServerCommand(strValue);
-                std::string strMsg = handler.GetResponse();
-                if (!strMsg.empty())
-                {
-                    std::cout << "C:  " << strMsg << std::endl;
-                    tcpFd.Send(strMsg);
-                }
+              
             }
         }
 

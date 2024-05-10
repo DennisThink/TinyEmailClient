@@ -49,11 +49,13 @@ void SendEmail(const std::string strUserName, std::string strPassword, std::stri
                 std::string strClientReq = handler.GetResponse();
                 if (!strClientReq.empty())
                 {
+                    
                     if (bDebug)
                     {
                         std::cout << "S: " << strServerRsp << std::endl;
                         std::cout << "C: " << strClientReq << std::endl;
                     }
+                    strServerRsp.clear();
                     tcpFd.Send(strClientReq);
                 }
             }          

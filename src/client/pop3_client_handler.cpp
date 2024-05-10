@@ -4,7 +4,7 @@
 #include "CPop3ProtoCmd.h"
 namespace tiny_email
 {
-        CPop3ClientHandler::CPop3ClientHandler(const std::string strEmailAddr, const std::string strPassword):EmailClientProtoInterface(m_strUserName,strPassword)
+        CPop3ClientHandler::CPop3ClientHandler(const std::string strEmailAddr, const std::string strPassword):EmailClientProtoInterface(strEmailAddr,strPassword)
         {
             std::string strEmail = strEmailAddr;
             std::size_t index = strEmail.find_first_of("@");
@@ -125,19 +125,19 @@ namespace tiny_email
                 HandleListAllRsp(strValue);
                 m_step = POP3_CLIENT_GET_ONE_UNREAD;
                 m_step = GetNextCmd(m_step, POP3_ANY);
-                m_strSend = CmdToRequestContext(m_step);
+                m_strResponse = CmdToRequestContext(m_step);
                 return;
             }
             if (m_step == POP3_CLIENT_STEP_t::POP3_CLIENT_GET_ONE_UNREAD)
             {
                 HandleGetOneUnread(strValue);
                 m_step = GetNextCmd(m_step, POP3_ANY);
-                m_strSend = CmdToRequestContext(m_step);
+                m_strResponse = CmdToRequestContext(m_step);
                 return;
             }
             CPop3ProtoCmd curCmd = CPop3ProtoCmd::FromString(strValue);
             m_step = GetNextCmd(m_step, curCmd.GetCode());
-            m_strSend = CmdToRequestContext(m_step);
+            m_strResponse = CmdToRequestContext(m_step);
 
         }
 

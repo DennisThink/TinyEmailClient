@@ -58,31 +58,31 @@ namespace tiny_email
 		}
 		if (m_step == IMAP_CLIENT_GET_CAPABILITY)
 		{
-			m_strSend = "A01 CAPABILITY\r\n";
+			m_strResponse = "A01 CAPABILITY\r\n";
 		}
 		if (m_step == IMAP_CLIENT_LOGIN)
 		{
-			m_strSend = "A02 LOGIN " + m_strUserName +" "+ m_strPassword + "\r\n";
+			m_strResponse = "A02 LOGIN " + m_strUserName +" "+ m_strPassword + "\r\n";
 		}
 		if (m_step == IMAP_CLIENT_SELECT_INBOX)
 		{
-			m_strSend = "A03 SELECT INBOX\r\n";
+			m_strResponse = "A03 SELECT INBOX\r\n";
 		}
 		if (m_step == IMAP_CLIENT_CHECK_INBOX)
 		{
-			m_strSend = "A04 EXAMINE INBOX\r\n";
+			m_strResponse = "A04 EXAMINE INBOX\r\n";
 		}
 		if (m_step == IMAP_CLIENT_SEARCH_ALL)
 		{
-			m_strSend = "A05 SEARCH ALL\r\n";
+			m_strResponse = "A05 SEARCH ALL\r\n";
 		}
 		if (m_step == IMAP_CLIENT_FETCH_ONE)
 		{
-			m_strSend = "A06 FETCH 1 RFC822\r\n";
+			m_strResponse = "A06 FETCH 1 RFC822\r\n";
 		}
 		if (m_step == IMAP_CLIENT_LOGOUT)
 		{
-			m_strSend = "A07 LOGOUT\r\n";
+			m_strResponse = "A07 LOGOUT\r\n";
 		}
 		
 		return;

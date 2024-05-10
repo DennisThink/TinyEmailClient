@@ -17,6 +17,7 @@ class CSmtpClientHandler:public EmailClientProtoInterface
         virtual int GetServerPort() override;
         virtual int GetServerSSLport() override;
         virtual void OnServerCommand(const std::string strServerCmd) override;
+        virtual bool IsServerRspCompleted(const std::string strRsp) override;
     private:
         std::string GetNextSend(const Smtp_Step_t curStep);
         Smtp_Step_t GetNextCmd(const Smtp_Step_t curStep, const ProtoCode_t code);
@@ -31,7 +32,7 @@ class CSmtpClientHandler:public EmailClientProtoInterface
         std::string m_strContent;
  
 
-        std::string m_strSend;
+        //std::string m_strSend;
 
 
     };

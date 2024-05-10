@@ -36,20 +36,18 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
                 std::cout << "IMAP:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
                 std::cout << "Connect Succeed" << std::endl;
             }
-            char buff[2048] = {0};
+            char buff[128] = {0};
             std::string strServerRsp;
             while (!handler.IsFinished())
             {
-                memset(buff, 0, 2048);
-                int nRecv = tcpFd.Receive(buff, 2048, false);
+                memset(buff, 0, 128);
+                int nRecv = tcpFd.Receive(buff, 128, false);
                 if (nRecv > 0)
                 {
-                    std::string strValue(buff, nRecv);
-                    strServerRsp += strValue;
+                    strServerRsp += std::string(buff);
                     if (handler.IsServerRspCompleted(strServerRsp))
                     {
                         handler.OnServerCommand(strServerRsp);
-                        strServerRsp.clear();
                         std::string strClientReq = handler.GetResponse();
                         if (!strClientReq.empty())
                         {
@@ -58,6 +56,7 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
                                 std::cout << "S: " << strServerRsp << std::endl;
                                 std::cout << "C: " << strClientReq << std::endl;
                             }
+                            strServerRsp.clear();
                             tcpFd.Send(strClientReq);
                         }
                     }
