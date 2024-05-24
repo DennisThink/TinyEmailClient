@@ -7,6 +7,8 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 message("Windows")
 add_definitions(-DWINDOWS)
 add_definitions(-DWINDOWS_OS)
+add_compile_definitions(WINDOWS_OS)
+link_directories(./libs/)
 else()
 add_definitions(-DLINUX_OS)
 SET(CMAKE_CXX_FLAGS "-g")
@@ -15,6 +17,8 @@ endif()
 
 include_directories(./include/thirdparty/socket-cpp/Socket/)
 include_directories(./include/thirdparty/clipp/include/)
+include_directories(./include/thirdparty/ssl_inc/)
+include_directories(./include/thirdparty/)
 include_directories(./include/)
 include_directories(./client/)
 SET(NET_FILE 
@@ -45,3 +49,12 @@ SET(IMAP_FILE  ./client/imap_client_handler.cpp
 add_executable(smtp ./client/smtp_main.cpp ${NET_FILE} ${SMTP_FILE})
 add_executable(pop3 ./client/pop3_main.cpp ${NET_FILE} ${POP3_FILE})
 add_executable(imap ./client/imap_main.cpp ${NET_FILE} ${IMAP_FILE})
+add_executable(ssl_smtp ./client/ssl_tcp_main.cpp  
+                ./client/ssl_tcp_client.cpp
+                ./client/smtp_client_handler.cpp 
+                ./include/ProtoUtil.cpp 
+                ./client/EmailClientProtoInterface.cpp 
+                ./include/CProtoCmd.cpp)
+target_link_libraries(ssl_smtp libssl-1_1-x64.lib)
+target_link_libraries(ssl_smtp libcrypto-1_1-x64.lib)
+target_link_libraries(ssl_smtp ws2_32.lib)
