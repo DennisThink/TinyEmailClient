@@ -2,9 +2,8 @@
 #include "TCPClient.h"
 #include "smtp_client_handler.h"
 #include "ProtoUtil.h"
-//#include "clipp.h"
 #include <iostream>
-
+//#include "clipp.h"
 int SSL_TEST(int argc, char* argv[])
 {
 	using namespace tiny_net;
@@ -94,7 +93,7 @@ void SendEmail_SSL(const std::string strUserName, std::string strPassword, std::
     }
 }
 
-int SMTP_SSL_SEND(int argc, char* argv[])
+int SMTP_SSL_SEND(int argc, char* *argv)
 {
     {
         //using namespace clipp;
@@ -124,23 +123,23 @@ int SMTP_SSL_SEND(int argc, char* argv[])
             required("-t", "--context").doc("email content") & value("context", strContent),
             option("-server", "--server").doc("smtp server addr").set(bSetSmtpServer) & value("smtp server ip addr", strSmtpServer),
             option("-port", "--port").doc("smtp server port").set(bSetPort) & value("email subject", strPort));
-
-        if (!parse(argc, argv, cli))
+        */
+        //if (!parse(argc, argv, cli))
         {
-            std::cout << make_man_page(cli, argv[0]) << std::endl;
-            return 0;
+            //std::cout << make_man_page(cli, argv[0]) << std::endl;
+          //  return 0;
         }
-        else
+        //else
         {
             SendEmail_SSL(strUser, strPassword, strReciver, strCarbonCopy, strContent, strSubject, bDebugOn, strSmtpServer, strPort);
-        }*/
-        SendEmail_SSL(strUser, strPassword, strReciver, strCarbonCopy, strContent, strSubject, bDebugOn, strSmtpServer, strPort);
+        }
+        //SendEmail_SSL(strUser, strPassword, strReciver, strCarbonCopy, strContent, strSubject, bDebugOn, strSmtpServer, strPort);
     }
 
     return 0;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
     return SMTP_SSL_SEND(argc, argv);
 }
