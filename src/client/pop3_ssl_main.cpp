@@ -18,8 +18,9 @@ int main(int argc, char *argv[])
     {
         Pop3RecvEmailSSL(result._strUserAddress, 
             result._strUserPassword,
-            result._bDebug,
-            result._strServerPort);
+            result._strServerAddr,
+            result._strServerPort,
+            result._bDebug);
     }
 
     return 0;

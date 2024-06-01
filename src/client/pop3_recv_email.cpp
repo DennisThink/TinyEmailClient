@@ -3,7 +3,7 @@
 #include "pop3_client_handler.h"
 #include "ProtoUtil.h"
 
-void Pop3RecvEmail(const std::string strUserName, std::string strPassword, bool bDebug, std::string strPort)
+void Pop3RecvEmail(const std::string strUserName, std::string strPassword,std::string strServerAddr,std::string strPort, bool bDebug)
 {
     {
 #ifdef WINDOWS_OS

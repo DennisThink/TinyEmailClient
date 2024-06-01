@@ -70,9 +70,9 @@ RecvEmailParams_t ParseRecvParam(int argc, char* argv[])
         auto cli = (
             required("-u", "--user").doc("the account you used for send email") & value("user", strUser),
             required("-p", "--password").doc("the password of the account") & value("password", strPassword),
-            option("-d", "--debug").doc("enable debug mode").set(bDebugOn),
             option("-s", "--server").doc("imap server addr").set(strServer) & opt_value("server", strServer),
-            option("-pp", "--port").doc("imap server port").set(bSetPort) & opt_value("port", strPort));
+            option("-pp", "--port").doc("imap server port").set(bSetPort) & opt_value("port", strPort),
+            option("-d", "--debug").doc("enable debug mode").set(bDebugOn));
 
         if (!parse(argc, argv, cli))
         {
