@@ -49,12 +49,37 @@ SET(IMAP_FILE  ./client/imap_client_handler.cpp
 add_executable(smtp ./client/smtp_main.cpp ./client/parse_params_struct.cpp ${NET_FILE} ${SMTP_FILE})
 add_executable(pop3 ./client/pop3_main.cpp ./client/parse_params_struct.cpp ${NET_FILE} ${POP3_FILE})
 add_executable(imap ./client/imap_main.cpp ./client/parse_params_struct.cpp ${NET_FILE} ${IMAP_FILE})
-add_executable(ssl_smtp ./client/ssl_tcp_main.cpp  
+add_executable(ssl_smtp ./client/ssl_tcp_main.cpp
+                ./client/send_mail_ssl.cpp
                 ./client/ssl_tcp_client.cpp
                 ./client/smtp_client_handler.cpp 
                 ./include/ProtoUtil.cpp 
                 ./client/EmailClientProtoInterface.cpp 
-                ./include/CProtoCmd.cpp)
+                ./include/CProtoCmd.cpp
+                ./client/parse_params_struct.cpp)
+
+add_executable(ssl_pop3 
+                ./client/pop3_ssl_main.cpp 
+                ./client/parse_params_struct.cpp
+                ./client/pop3_ssl_recv_email.cpp
+                ./client/ssl_tcp_client.cpp
+                ${NET_FILE} ${POP3_FILE})
+
+add_executable(ssl_imap 
+                    ./client/imap_ssl_main.cpp 
+                    ./client/parse_params_struct.cpp
+                    ./client/imap_ssl_recv_mail.cpp
+                    ./client/ssl_tcp_client.cpp
+                    ${NET_FILE} ${IMAP_FILE})
+
 target_link_libraries(ssl_smtp libssl-1_1-x64.lib)
 target_link_libraries(ssl_smtp libcrypto-1_1-x64.lib)
 target_link_libraries(ssl_smtp ws2_32.lib)
+
+target_link_libraries(ssl_pop3 libssl-1_1-x64.lib)
+target_link_libraries(ssl_pop3 libcrypto-1_1-x64.lib)
+target_link_libraries(ssl_pop3 ws2_32.lib)
+
+target_link_libraries(ssl_imap libssl-1_1-x64.lib)
+target_link_libraries(ssl_imap libcrypto-1_1-x64.lib)
+target_link_libraries(ssl_imap ws2_32.lib)
