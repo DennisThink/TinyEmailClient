@@ -10,11 +10,30 @@ void Pop3RecvEmailSSL(const std::string strUserName, std::string strPassword,std
         tiny_email::CPop3ClientHandler handler(strUserName, strPassword);
         tiny_net::CSSLTcpClient client;
         tiny_net::CSSLTcpClient::Init();
-        //std::string strSmtpPort = std::atoi(strPort.c_str());
-        std::string strServerIp;
-        int port = handler.GetServerSSLport();
-        std::string strSmtpIp;
-        client.Connect(strServerIp, port);
+        std::string strPop3SSLServer;
+        int nPop3SSLPort;
+        {
+            if (strServerAddr.empty())
+            {
+                std::string strTemp = handler.GetServerAddr();
+                strPop3SSLServer = tiny_email::CProtoUtil::AddrToIp(strTemp);
+            }
+            else
+            {
+                strPop3SSLServer = tiny_email::CProtoUtil::AddrToIp(strServerAddr);
+            }
+
+            if (strPort.empty())
+            {
+                nPop3SSLPort = handler.GetServerSSLport();
+            }
+            else
+            {
+                nPop3SSLPort = std::atoi(strPort.c_str());
+            }
+        }
+        std::cout << "POP3 SSL  " << strPop3SSLServer << ":" << nPop3SSLPort << std::endl;
+        client.Connect(strPop3SSLServer, nPop3SSLPort);
         char buff[128] = { 0 };
 
         std::string strServerRsp;
