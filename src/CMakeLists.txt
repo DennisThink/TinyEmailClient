@@ -49,7 +49,7 @@ SET(IMAP_FILE  ./client/imap_client_handler.cpp
 add_executable(smtp ./client/smtp_main.cpp ./client/parse_params_struct.cpp ${NET_FILE} ${SMTP_FILE})
 add_executable(pop3 ./client/pop3_main.cpp ./client/parse_params_struct.cpp ${NET_FILE} ${POP3_FILE})
 add_executable(imap ./client/imap_main.cpp ./client/parse_params_struct.cpp ${NET_FILE} ${IMAP_FILE})
-add_executable(ssl_smtp ./client/ssl_tcp_main.cpp
+add_executable(ssl_smtp ./client/smtp_ssl_main.cpp
                 ./client/send_mail_ssl.cpp
                 ./client/ssl_tcp_client.cpp
                 ./client/smtp_client_handler.cpp 

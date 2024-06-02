@@ -92,6 +92,7 @@ namespace tiny_net
     {
         struct hostent* host;
         struct sockaddr_in addr;
+        m_sock = socket(PF_INET, SOCK_STREAM, 0);
 #ifdef WINDOWS_OS
         if ((host = gethostbyname(strIp.c_str())) == NULL) exit(-1); // get host by name
 #endif
@@ -111,6 +112,8 @@ namespace tiny_net
         else
         {
             m_bConnected = true;
+            int ret = SSL_set_fd(g_ssl, m_sock); // assigns a socket to a SSL structure
+            ret = SSL_connect(g_ssl);
         }
     }
     bool CSSLTcpClient::IsConnect() const
@@ -140,5 +143,6 @@ namespace tiny_net
     {
         SSL_free(g_ssl); // close ssl
         SSL_CTX_free(g_sslCtx); // release context
+        closesocket(m_sock);
     }
 }
