@@ -94,7 +94,7 @@ namespace tiny_email{
     
     int CSmtpClientHandler::GetServerSSLport()
     {
-        return 0;
+        return 465;
     }
 
     bool CSmtpClientHandler::IsFinished()

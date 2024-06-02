@@ -22,19 +22,42 @@ void Pop3RecvEmail(const std::string strUserName, std::string strPassword,std::s
 
         {
             tiny_email::CPop3ClientHandler handler(strUserName, strPassword);
-            std::string strPop3Addr = handler.GetServerAddr();
-            std::string strPop3Ip = tiny_email::CProtoUtil::AddrToIp(strPop3Addr);
-            std::string strPop3Port = strPort;
-            std::cout << "Pop3:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
+            std::string strPop3Server;
+            std::string strPop3Port;
+            {
+                if (strServerAddr.empty())
+                {
+                    std::string strAddr = handler.GetServerAddr();
+                    strPop3Server = tiny_email::CProtoUtil::AddrToIp(strAddr);
+                }
+                else
+                {
+                    strPop3Server = tiny_email::CProtoUtil::AddrToIp(strServerAddr);
+                }
+                
+                if (strPort.empty())
+                {
+                    strPop3Port = std::to_string(handler.GetServerPort());
+                }
+                else
+                {
+                    strPop3Port = strPort;
+                }
+              
+                std::string strPop3Port = strPort;
+               
+            }
+           
             CTCPClient tcpFd([](const std::string &strLogMsg)
                              { std::cout << strLogMsg << std::endl; });
-            if (!tcpFd.Connect(strPop3Ip, strPop3Port))
+            if (!tcpFd.Connect(strPop3Server, strPop3Port))
             {
+                std::cout << " Connect Pop3:  " << strPop3Server << "  IP:  " << strPop3Port <<"  Failed  "<< std::endl;
                 return;
             }
             else
             {
-                std::cout << "Pop3:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
+                std::cout << "Pop3:  " << strPop3Server << "  IP:  " << strPop3Port << std::endl;
                 std::cout << "Connect Succeed" << std::endl;
             }
             char buff[128] = {0};

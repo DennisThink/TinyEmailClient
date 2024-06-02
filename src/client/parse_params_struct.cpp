@@ -64,7 +64,7 @@ RecvEmailParams_t ParseRecvParam(int argc, char* argv[])
         std::string strUser;
         std::string strPassword;
         std::string strServer;
-        std::string strPort = "143";
+        std::string strPort;
         bool bDebugOn = false;
         bool bSetPort = false;
         auto cli = (
