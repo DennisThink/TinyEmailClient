@@ -2,7 +2,7 @@
 #include "TCPClient.h"
 #include "imap_client_handler.h"
 #include "ProtoUtil.h"
-void ImapRecvEmail(const std::string strUserName, std::string strPassword, const std::string strIp, std::string strPort, bool bDebug)
+void ImapRecvEmail(const std::string strUserName, std::string strPassword, const std::string strServerAddr, std::string strPort, bool bDebug)
 {
 
     {
@@ -21,23 +21,43 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
 #endif
         {
             tiny_email::CImapClientHandler handler(strUserName, strPassword);
-            std::string strPop3Addr = handler.GetServerAddr();
-            std::string strPop3Ip = tiny_email::CProtoUtil::AddrToIp(strPop3Addr);
-            std::string strPop3Port = strPort;
-            std::cout << "IMAP:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
-            CTCPClient tcpFd([](const std::string &strLogMsg)
-                             { std::cout << strLogMsg << std::endl; });
-            if (!tcpFd.Connect(strPop3Ip, strPop3Port))
+            std::string strImapServer;
+            int nImapPort;
             {
+                if (strServerAddr.empty())
+                {
+                    std::string strTemp = handler.GetServerAddr();
+                    strImapServer = tiny_email::CProtoUtil::AddrToIp(strTemp);
+                }
+                else
+                {
+                    strImapServer = tiny_email::CProtoUtil::AddrToIp(strServerAddr);
+                }
+
+                if (strPort.empty())
+                {
+                    nImapPort = handler.GetServerPort();
+                }
+                else
+                {
+                    nImapPort = std::atoi(strPort.c_str());
+                }
+            }
+            std::cout << "IMAP SSL " << strImapServer << ":" << nImapPort << std::endl;
+            char buff[128] = {0};
+            std::string strServerRsp;
+            CTCPClient tcpFd([](const std::string& strLogMsg)
+                { std::cout << strLogMsg << std::endl; });
+            if (!tcpFd.Connect(strImapServer, std::to_string(nImapPort)))
+            {
+                std::cout << " Connect Imap:  " << strImapServer << "  IP:  " << nImapPort << "  Failed  " << std::endl;
                 return;
             }
             else
             {
-                std::cout << "IMAP:  " << strPop3Addr << "  IP:  " << strPop3Ip << std::endl;
+                std::cout << "Imap:  " << strImapServer << "  IP:  " << nImapPort << std::endl;
                 std::cout << "Connect Succeed" << std::endl;
             }
-            char buff[128] = {0};
-            std::string strServerRsp;
             while (!handler.IsFinished())
             {
                 memset(buff, 0, 128);
