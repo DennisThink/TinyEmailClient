@@ -143,6 +143,10 @@ namespace tiny_net
     {
         SSL_free(g_ssl); // close ssl
         SSL_CTX_free(g_sslCtx); // release context
+#ifdef WINDOWS_OS
         closesocket(m_sock);
+#else
+        close(m_sock);
+#endif
     }
 }

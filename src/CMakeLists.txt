@@ -72,6 +72,7 @@ add_executable(ssl_imap
                     ./client/ssl_tcp_client.cpp
                     ${NET_FILE} ${IMAP_FILE})
 
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 target_link_libraries(ssl_smtp libssl-1_1-x64.lib)
 target_link_libraries(ssl_smtp libcrypto-1_1-x64.lib)
 target_link_libraries(ssl_smtp ws2_32.lib)
@@ -83,3 +84,13 @@ target_link_libraries(ssl_pop3 ws2_32.lib)
 target_link_libraries(ssl_imap libssl-1_1-x64.lib)
 target_link_libraries(ssl_imap libcrypto-1_1-x64.lib)
 target_link_libraries(ssl_imap ws2_32.lib)
+else()
+target_link_libraries(ssl_smtp libssl.a)
+target_link_libraries(ssl_smtp libcrypto.a)
+
+target_link_libraries(ssl_pop3 libssl.a)
+target_link_libraries(ssl_pop3 libcrypto.a)
+
+target_link_libraries(ssl_imap libssl.a)
+target_link_libraries(ssl_imap libcrypto.a)
+endif()
