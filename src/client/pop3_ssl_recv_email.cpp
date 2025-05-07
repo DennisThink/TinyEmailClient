@@ -40,7 +40,7 @@ void Pop3RecvEmailSSL(const std::string strUserName, std::string strPassword,std
         while (!handler.IsFinished())
         {
             memset(buff, 0, 128);
-            int nRecv = client.Recv(buff, 128);
+            int nRecv = client.Recv(buff, 127);
             if (nRecv > 0)
             {
                 std::string strValue(buff, nRecv);

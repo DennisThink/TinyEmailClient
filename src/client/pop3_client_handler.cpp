@@ -15,8 +15,9 @@ namespace tiny_email
 
         bool CPop3ClientHandler::IsFinished()
         {
-                return false;
+            return POP3_CLIENT_STEP_t::POP3_CLIENT_STEP_QUIT == m_step;
         }
+
         std::string CPop3ClientHandler::GetServerAddr()
         {
             return m_strServerAddr;

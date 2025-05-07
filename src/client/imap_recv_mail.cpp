@@ -61,7 +61,7 @@ void ImapRecvEmail(const std::string strUserName, std::string strPassword, const
             while (!handler.IsFinished())
             {
                 memset(buff, 0, 128);
-                int nRecv = tcpFd.Receive(buff, 128, false);
+                int nRecv = tcpFd.Receive(buff, 127, false);
                 if (nRecv > 0)
                 {
                     strServerRsp += std::string(buff);
